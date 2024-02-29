@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HiperHyped API</title>
+    <style>
+        /* Estilos da página */
+        .top-bar {
+            height: 100px;
+            background-color: #f5f5f5;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            height: 80px;
+            margin-right: 20px;
+        }
+
+        .dropdown, .search-field {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <img src="logo_hiperhyped.png" alt="HiperHyped Logo" class="logo">
+        <select id="searchType" class="dropdown">
+            <option value="ean">EAN</option>
+            <option value="produto">Produto</option>
+            <option value="marca">Marca</option>
+            <option value="categoria">Categoria</option>
+            <option value="palavra">Palavra</option>
+            <option value="prod_cat">Produto/Categoria</option>
+        </select>
+        <input type="text" id="searchInput" class="search-field">
+        <select id="categoryDropdown" class="dropdown">
+            <!-- Opções de categorias serão carregadas aqui -->
+        </select>
+        <label>
+            Gerar JSON
+            <input type="checkbox" id="generateJson">
+        </label>
+        <button id="confirmButton">Confirmar</button>
+    </div>
+    <div id="results"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
