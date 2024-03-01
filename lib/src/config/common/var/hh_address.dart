@@ -12,7 +12,6 @@ abstract class HHAddress {
 
   static String urlXml = "${urlS3}xml/";
 
-  static String urlTeste = "www.hiperhyped.com.br";
 
 }
 
