@@ -1,7 +1,7 @@
 on: push
 name: 🚀 Deploy website on push
 jobs:
-  web-deploy:
+  deploy:
     name: 🎉 Deploy
     runs-on: ubuntu-latest
     steps:
@@ -13,3 +13,5 @@ jobs:
               user: ${{ secrets.USER }}
               password: ${{ secrets.PASS }}
               localDir: "dist"
+
+
