@@ -1,0 +1,7 @@
+{"app_name":"hh_2","version":"0.4","build_number":"1","package_name":"hh_2"}
+
+Principais Mudanças em relação a v0.3:
+
+- Fine Tunings em Xerxes Operations - mudei ax3 que não estava funcionando corretamente
+- Criei Preferencias (settingBar)
+- Arrumei problemas de addProduct e removeProduct em Badges
