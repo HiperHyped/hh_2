@@ -16,6 +16,7 @@ class AIService {
   Future<OpenAICompletionModel> createCompletion({
     required String model,
     required String prompt,
+    int teste = 1000,
     int maxTokens = 1000,
     double temperature = 0.5,
     int n = 1,
