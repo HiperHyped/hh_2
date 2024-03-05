@@ -25,7 +25,7 @@ class _HistoryBarState extends State<HistoryBar> {
           color: HHColors.hhColorGreyLight,
           child: Scrollbar(
             controller: innerController,
-            isAlwaysShown: false,
+            thumbVisibility: false,
             child: ListView.builder(
               controller: innerController,
               scrollDirection: Axis.horizontal,

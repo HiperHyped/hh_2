@@ -27,7 +27,7 @@ class _SuggestionBarState extends State<SuggestionBar> {
           color: HHColors.hhColorGreyLight,
           child: Scrollbar(
             controller: innerController,
-            isAlwaysShown: false,
+            thumbVisibility: false,
             child: ListView.builder(
               controller: innerController,
               scrollDirection: Axis.horizontal,
@@ -85,7 +85,7 @@ class _SuggestionBarState extends State<SuggestionBar> {
           color: HHColors.hhColorGreyLight,
           child: Scrollbar(
             controller: innerController,
-            isAlwaysShown: false,
+            thumbVisibility: false,
             child: ListView.builder(
               controller: innerController,
               scrollDirection: Axis.horizontal,
@@ -127,7 +127,7 @@ class _SuggestionBarState extends State<SuggestionBar> {
           color: HHColors.hhColorGreyLight,
           child: Scrollbar(
             controller: innerController,
-            isAlwaysShown: false,
+            thumbVisibility: false,
             child: ListView.builder(
               controller: innerController,
               scrollDirection: Axis.horizontal,
@@ -165,7 +165,7 @@ class _SuggestionBarState extends State<SuggestionBar> {
           color: HHColors.hhColorGreyLight,
           child: Scrollbar(
             controller: innerController,
-            isAlwaysShown: false,
+            thumbVisibility: false,
             child: ListView.builder(
               controller: innerController,
               scrollDirection: Axis.horizontal,
