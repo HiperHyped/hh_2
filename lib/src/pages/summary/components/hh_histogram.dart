@@ -24,7 +24,7 @@ class HHHistogram extends StatelessWidget {
       ),
       alignment: Alignment.center,
       child: CustomPaint(
-        size: Size(double.infinity, 50),
+        size: Size(double.infinity, 51),
         painter: HHHistPainter(
           data: data,
           labels: labels,
