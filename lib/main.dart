@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 //import 'package:amplify_flutter/amplify_flutter.dart';
 //import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 
-// testando o push
+// testando o push para ver se da certo
 
 
 
