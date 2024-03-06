@@ -44,4 +44,45 @@ class DBSummary {
       print("DEPOIS: ${HHSummary.toStaticString()}");
     }
   }
+
+  Future<void> fetchTimeSummary(int userId) async {
+    final sql = 'SELECT * FROM TimeSummary WHERE user_id = ?';
+    final values = [userId];
+    final results = await _dbService.query(sql, values);
+
+    //print("RESULT FETCH TIMESUMMARY:/n");
+    //print(results.first);
+    if (results.isNotEmpty) {
+      var summary = results.first;
+      
+      // Assuming the DBService returns a map for each row
+      Map<String, int> weekCounts = {};
+      Map<String, int> hourCounts = {};
+
+      // Extract weekCounts and hourCounts from summary
+      for (var day in ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab']) {
+        weekCounts[day] = int.tryParse(summary[day].toString()) ?? 0;
+      }
+      for (var hour in ['00h', '03h', '06h', '09h', '12h', '15h', '18h', '21h']) {
+        hourCounts[hour] = int.tryParse(summary[hour].toString()) ?? 0;
+      }
+      TimeSummary timeSummary = TimeSummary(weekCounts: weekCounts, hourCounts: hourCounts);
+      
+      HHSummary.setTimeSummary(timeSummary);
+      print(HHSummary.timeSummary!.weekCounts);
+      print(HHSummary.timeSummary!.hourCounts);
+
+      // Encontrar o dia da semana mais comum
+      var commonDay = timeSummary.weekCounts.entries.reduce((a, b) => a.value > b.value ? a : b).key;
+      HHSummary.diaSemanaMaisComum = commonDay;
+
+      // Encontrar o horário mais comum, arredondado
+      var commonHour = timeSummary.hourCounts.entries.reduce((a, b) => a.value > b.value ? a : b).key;
+      HHSummary.horarioMaisComum = commonHour;
+
+      // Impressão para verificação
+      print('Dia mais comum: $commonDay, com ${timeSummary.weekCounts[commonDay]} ocorrências');
+      print('Hora mais comum: $commonHour, com ${timeSummary.hourCounts[commonHour]} ocorrências');
+    } 
+  }
 }

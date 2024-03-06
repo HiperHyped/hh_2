@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hh_2/src/config/common/var/hh_globals.dart';
+import 'package:hh_2/src/pages/summary/components/hh_histogram.dart';
 import 'package:intl/intl.dart';
 import 'package:hh_2/src/config/common/var/hh_colors.dart';
 import '../../config/common/var/hh_summary.dart';
@@ -81,6 +82,16 @@ class SummaryPage extends StatelessWidget {
       ],
     );
   }
+
+  Widget _buildHistogramRow(String label, Map<String, int> data, List<String> labels, String selectedLabel, int labelClip) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      _buildLabel(label),
+      HHHistogram(data: data, labels: labels, selectedLabel: selectedLabel, labelClip: labelClip,),
+    ],
+  );
+}
 
   @override
   Widget build(BuildContext context) {
@@ -212,21 +223,29 @@ class SummaryPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
-                  child: _buildDataRow(
-                    label: 'Horário Mais Comum',
-                    data: HHSummary.horarioMaisComum, // Garanta que esteja em formato 'HH:mm'
+                  child: Container(
+                    child: _buildHistogramRow(
+                      'Horário Mais Comum: ${HHSummary.horarioMaisComum}',
+                      HHSummary.timeSummary!.hourCounts,
+                      ['00h', '03h', '06h', '09h', '12h', '15h', '18h', '21h'],
+                      HHSummary.horarioMaisComum, 
+                      2
+                    ),
                   ),
                 ),
                 const SizedBox(width: 16), // Espaçamento entre os boxes
                 Expanded(
-                  child: _buildDataRow(
-                    label: 'Dia Semana Mais Comum',
-                    data: HHSummary.diaSemanaMaisComum,
-                  ),
+                  child:   _buildHistogramRow(
+                    'Dia Mais Comum: ${HHSummary.diaSemanaMaisComum}',
+                    HHSummary.timeSummary!.weekCounts,
+                    ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'],
+                    HHSummary.diaSemanaMaisComum,
+                    1
+  ),
                 ),
               ],
             ),
-            const SizedBox(height:16), // Espaçamento entre as linhas
+            const SizedBox(height:20), // Espaçamento entre as linhas
 
             // Sexta linha com três itens
             Row(

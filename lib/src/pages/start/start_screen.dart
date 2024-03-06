@@ -64,6 +64,7 @@ class _StartPageState extends State<StartPage> {
         // Pega o Report Summary do Usuário
         //await _dbService.query('CALL GenerateCompleteReport()');
         await _dbSummary.fetchSummary(user.userId);
+        await _dbSummary.fetchTimeSummary(user.userId);
         HHSummary.toStaticString();
 
 
