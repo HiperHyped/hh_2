@@ -8,6 +8,8 @@ import 'package:provider/provider.dart';
 //import 'package:amplify_flutter/amplify_flutter.dart';
 //import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 
+// testando o push codigo de terceiro
+
 
 
 void main() {
@@ -31,7 +33,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Hiper Hyped',
+      title: 'Hiper Hyped - Versao André',
       theme: ThemeData(
         primarySwatch: HHColors.hhColorFirstSwatch,
         scaffoldBackgroundColor: Colors.white.withAlpha(190),
