@@ -99,7 +99,7 @@ class SummaryPage extends StatelessWidget {
       backgroundColor: HHColors.hhColorGreyMedium,
       appBar: AppBar(
         title: Text(
-          'Relatório de Compra',
+          'Resumo de Compra',
           style: TextStyle(color: HHColors.hhColorWhite),
         ),
         backgroundColor: HHColors.hhColorFirst,
@@ -236,7 +236,7 @@ class SummaryPage extends StatelessWidget {
                 const SizedBox(width: 16), // Espaçamento entre os boxes
                 Expanded(
                   child:   _buildHistogramRow(
-                    'Dia Mais Comum: ${HHSummary.diaSemanaMaisComum}',
+                    'Dia Mais Comum: ${HHSummary.diaSemanaMaisComum.toUpperCase()}',
                     HHSummary.timeSummary!.weekCounts,
                     ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'],
                     HHSummary.diaSemanaMaisComum,
