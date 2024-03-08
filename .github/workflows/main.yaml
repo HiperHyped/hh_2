@@ -18,7 +18,7 @@ jobs:
     steps:
       # Ação para fazer checkout do código do repositório
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       
       # Ação para fazer o deploy dos arquivos para o servidor FTP
       - name: Deploy to FTP server
@@ -31,5 +31,5 @@ jobs:
           # Senha do servidor FTP
           password: ${{ secrets.PASS }}
           # Pasta onde os arquivos serão enviados no servidor FTP
-          remote-dir: /public_html/hh3
+          localDir: /public_html/hh3
 
