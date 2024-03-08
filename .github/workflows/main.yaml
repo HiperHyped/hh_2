@@ -31,5 +31,5 @@ jobs:
           # Senha do servidor FTP
           password: ${{ secrets.PASS }}
           # Pasta onde os arquivos serão enviados no servidor FTP
-          local-dir: /public_html/hh3
+          server-dir: public_html/hh3/
 
