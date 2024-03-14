@@ -33,7 +33,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Hiper Hyped - Versao André',
+      title: 'Hiper Hyped - Versao André 08032024',
       theme: ThemeData(
         primarySwatch: HHColors.hhColorFirstSwatch,
         scaffoldBackgroundColor: Colors.white.withAlpha(190),
