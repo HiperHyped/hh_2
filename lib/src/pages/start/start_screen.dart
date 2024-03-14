@@ -62,7 +62,7 @@ class _StartPageState extends State<StartPage> {
         print("SETTINGS==> hint ${HHSettings.hintSuggest}, gridView: ${HHSettings.gridView}, classCriteria: ${HHSettings.classCriteria}, gridLimit:${HHSettings.gridLimit}, gridLines:${HHSettings.gridLines}, , historyLimit:${HHSettings.historyLimit}");
 
         // Pega o Report Summary do Usuário
-        await _dbService.query('CALL GenerateCompleteReport()');
+        //await _dbService.query('CALL GenerateCompleteReport()');
         await _dbSummary.fetchSummary(user.userId);
         await _dbSummary.fetchTimeSummary(user.userId);
         HHSummary.toStaticString();

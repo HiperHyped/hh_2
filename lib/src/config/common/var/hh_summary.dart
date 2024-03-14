@@ -26,6 +26,7 @@ class HHSummary {
   static double valorMaximoProduto = 0.0;
   static String dataPrimeiraCompra = ''; 
   static String dataUltimaCompra = ''; 
+  static int tempoUltimaCompra = 0;
   static String diaSemanaMaisComum = '';
   static String horarioMaisComum = '';
   static double frequenciaMediaComprasDias = 0.0;
@@ -58,6 +59,7 @@ class HHSummary {
         valorMaximoProduto: $valorMaximoProduto,
         dataPrimeiraCompra: $dataPrimeiraCompra,
         dataUltimaCompra: $dataUltimaCompra,
+        tempoUltimaCompra: $tempoUltimaCompra,
         diaSemanaMaisComum: $diaSemanaMaisComum,
         horarioMaisComum: $horarioMaisComum,
         frequenciaMediaComprasDias: $frequenciaMediaComprasDias,
@@ -108,6 +110,7 @@ class HHSummary {
         valorMaximoProduto: $valorMaximoProduto,
         dataPrimeiraCompra: $dataPrimeiraCompra,
         dataUltimaCompra: $dataUltimaCompra,
+        tempoUltimaCOmpra: $tempoUltimaCompra,
         diaSemanaMaisComum: $diaSemanaMaisComum,
         horarioMaisComum: $horarioMaisComum,
         frequenciaMediaComprasDias: $frequenciaMediaComprasDias,

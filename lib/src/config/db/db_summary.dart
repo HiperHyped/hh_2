@@ -24,6 +24,7 @@ class DBSummary {
       HHSummary.valorMaximoProduto = double.parse(summary['ValorMaximoProduto'].toString());
       HHSummary.dataPrimeiraCompra = summary['DataPrimeiraCompra'];
       HHSummary.dataUltimaCompra = summary['DataUltimaCompra'];
+      HHSummary.tempoUltimaCompra = int.parse(summary['TempoUltimaCompra'].toString());  
       HHSummary.diaSemanaMaisComum = summary['DiaSemanaMaisComum'];
       HHSummary.horarioMaisComum = summary['HorarioMaisComum'];
       HHSummary.frequenciaMediaComprasDias = double.parse(summary['FrequenciaMediaComprasDias'].toString());

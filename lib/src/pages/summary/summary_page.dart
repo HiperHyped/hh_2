@@ -93,6 +93,7 @@ class SummaryPage extends StatelessWidget {
   );
 }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -138,7 +139,7 @@ class SummaryPage extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 16), // Espaçamento entre as linhas
+            const SizedBox(height: 10), // Espaçamento entre as linhas
             // Segunda linha com três itens
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -167,7 +168,7 @@ class SummaryPage extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 16), // Espaçamento entre as linhas
+            const SizedBox(height: 10), // Espaçamento entre as linhas
             // Continuação da terceira linha com três itens
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -189,13 +190,13 @@ class SummaryPage extends StatelessWidget {
                 const SizedBox(width: 16),
                 Expanded(
                   child: _buildDataRow(
-                    label: 'Frequência Média (dias)',
-                    data: HHSummary.frequenciaMediaComprasDias.toString(), // Substituir pelo valor adequado
+                    label: 'Frequência Média',
+                    data: "${HHSummary.frequenciaMediaComprasDias} dias", // Substituir pelo valor adequado
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 16), // Espaçamento entre as linhas
+            const SizedBox(height: 10), // Espaçamento entre as linhas
 
             // Quarta linha com dois itens
             Row(
@@ -214,9 +215,16 @@ class SummaryPage extends StatelessWidget {
                     data: dateFormat.format(DateTime.parse(HHSummary.dataUltimaCompra)),
                   ),
                 ),
+                const SizedBox(width: 16), // Espaçamento entre os boxes
+                Expanded(
+                  child: _buildDataRow(
+                    label: 'Tempo da Última Compra',
+                    data: "${HHSummary.tempoUltimaCompra} dias",
+                  ),
+                ),
               ],
             ),
-            const SizedBox(height: 16), // Espaçamento entre as linhas
+            const SizedBox(height: 10), // Espaçamento entre as linhas
 
             // Quinta linha com dois itens
             Row(
@@ -245,7 +253,7 @@ class SummaryPage extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height:20), // Espaçamento entre as linhas
+            const SizedBox(height:10), // Espaçamento entre as linhas
 
             // Sexta linha com três itens
             Row(
