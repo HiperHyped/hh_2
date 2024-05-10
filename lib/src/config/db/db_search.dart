@@ -324,7 +324,7 @@ class DBSearch {
 Future<List<EanModel>> searchProductV2(SearchModel searchProduct, int inputLimit) async {
     final List<dynamic> arguments;
 
-    // Verificando o tipo de pesquisa e configurando os argumentos
+     // Verificando o tipo de pesquisa e configurando os argumentos
     if (searchProduct.searchType == 'prod_cat') {
         arguments = [
             HHGlobals.HHUser.userId,
@@ -334,6 +334,7 @@ Future<List<EanModel>> searchProductV2(SearchModel searchProduct, int inputLimit
             inputLimit
         ];
     } else {
+        // Adicionando um valor secundário padrão como string vazia para garantir que sempre enviamos 5 argumentos
         arguments = [
             HHGlobals.HHUser.userId,
             searchProduct.searchType,
@@ -343,11 +344,12 @@ Future<List<EanModel>> searchProductV2(SearchModel searchProduct, int inputLimit
             searchProduct.searchType == 'brand' ? searchProduct.marca :
             searchProduct.searchType == 'word' ? searchProduct.w1 :
             "", // valor padrão
+            "", // valor secundário padrão
             inputLimit // limite padrão
         ];
     }
 
-    //print("SEARCHPRODUCTV2:::  ${searchProduct.searchType} ==> $arguments");
+    print("SEARCHPRODUCTV2:::  ${searchProduct.searchType} ==> $arguments");
 
     // Chamar a procedure diretamente
     final results = await _dbService.query('CALL GetClosestProductsByCriteriaV2(?, ?, ?, ?, ?)', arguments);

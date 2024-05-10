@@ -4,7 +4,7 @@ import 'package:http/http.dart';
 
 class DBService {
     //final String apiGatewayUrl = 'https://15a49x9kdi.execute-api.sa-east-1.amazonaws.com/default/DBHandler'; //LAMBDA - AMAZON RDS
-    final String apiGatewayUrl = 'http://www.hiperhyped.com.br/db_handler.php';   // PHP - LOCALWEB
+    final String apiGatewayUrl = 'https://www.hiperhyped.com.br/db_handler.php';   // PHP - LOCALWEB
 
     Future<List<dynamic>> query(String sql, [List<dynamic>? values]) async {
     try {

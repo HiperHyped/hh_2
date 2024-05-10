@@ -62,7 +62,8 @@ class DBUser {
       var row = result.first;
       print(row['user_id']);
       return UserModel(
-        userId: int.parse(row['user_id']),
+        //userId: int.parse(row['user_id']),
+        userId: row['user_id'] as int,
         login: row['user_login'] as String? ?? '',
         email: row['user_email'] as String? ?? '',
         password: row['user_password'] as String? ?? '',

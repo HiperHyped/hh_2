@@ -36,8 +36,9 @@ class DBHistory {
     for (var row in results) {
       var basket = BasketModel();
 
-      basket.basket_id = int.parse(row['basket_id']);
-      basket.user_id = int.parse(row['user_id']);
+      basket.basket_id = row['basket_id'] as int;
+      basket.user_id = row['user_id'] as int;
+
       // Convert the string to DateTime
       basket.basketTime = DateTime.parse(row['basket_time']);
       //basket.basketTime = row['basket_time'];

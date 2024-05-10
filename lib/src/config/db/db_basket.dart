@@ -39,7 +39,18 @@ class DBBasket {
 
 
   //////////GET BASKET ID
+  ///
   Future<int?> getLastBasketId(int userId) async {
+    var sql = 'SELECT MAX(basket_id) AS last_id FROM Basket WHERE user_id = ${HHVar.c}';
+    var result = await _dbService.query(sql, [userId]);
+    if (result.isNotEmpty) {
+      // Tratar last_id diretamente como um inteiro
+      var lastId = result.first['last_id'] as int?;
+      return lastId;
+    }
+    return null;
+  }
+  /*Future<int?> getLastBasketId(int userId) async {
     var sql = 'SELECT MAX(basket_id) AS last_id FROM Basket WHERE user_id = ${HHVar.c}';
     var result = await _dbService.query(sql, [userId]);
     if (result.isNotEmpty) {
@@ -47,7 +58,7 @@ class DBBasket {
       return lastIdString != null ? int.parse(lastIdString) : null;
     }
     return null;
-  }
+  }*/
 
 
   ///////ADD PRODUCT TO BASKET_LIST

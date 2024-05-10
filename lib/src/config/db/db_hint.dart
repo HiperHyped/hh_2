@@ -62,9 +62,10 @@ Future<void> updateCatSuggest(SuggestionModel suggestionModel) async {
     var result = await _dbService.query(sql, values);
 
     if (result.isNotEmpty) {
-      return int.parse(result.first['last_id']);
+      return result.first['last_id'] as int?;
     }
     return null;
+
   }
 
 

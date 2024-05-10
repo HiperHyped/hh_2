@@ -4,7 +4,7 @@ import 'package:dart_openai/openai.dart';
 
 class AIService {
   AIService() {
-    OpenAI.apiKey = "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"; // Initialize the package with the API key
+    OpenAI.apiKey = "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"; // Initialize the package with the API key
     OpenAI.organization = "org-2YkkE6qieHaCmPXsYoFecOsw"; // Optional:
   }
 
