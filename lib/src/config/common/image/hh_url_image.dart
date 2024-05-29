@@ -1,20 +1,7 @@
-import 'dart:async';
-import 'dart:math';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hh_2/src/config/common/var/hh_address.dart';
-import 'package:hh_2/src/config/common/var/hh_colors.dart';
-import 'package:hh_2/src/config/common/var/hh_globals.dart';
-import 'package:hh_2/src/config/common/var/hh_var.dart';
 import 'package:hh_2/src/models/ean_model.dart';
-
-import 'package:flutter/material.dart';
-import 'package:hh_2/src/models/ean_model.dart';
-
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-
 
 
 class HHUrlImage extends StatelessWidget {
@@ -26,12 +13,12 @@ class HHUrlImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String imageUrl = "${HHAddress.urlDb}${product.sigla.substring(0,1)}/${product.sigla.substring(1,3)}/${product.sigla.substring(3)}/${product.imagem}";
-    print(imageUrl);
+    //print(imageUrl);
  
     return CachedNetworkImage(
       imageUrl: imageUrl,
       fit: BoxFit.cover,
-      placeholder: (context, url) => Center(
+      placeholder: (context, url) => const Center(
         child: CircularProgressIndicator(),
       ),
       errorWidget: (context, url, error) => Container()

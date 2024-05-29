@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:dart_openai/openai.dart';
 
 class AIService {

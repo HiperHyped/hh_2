@@ -64,6 +64,13 @@ class DBService {
     Future<List<dynamic>> rawQuery(String sql) {
         return query(sql);
     }
+
+    
+    // Novo método para executar chamadas CALL sem esperar resposta
+    Future<void> call(String procedureName) async {
+      String sql = 'CALL $procedureName();';
+      await query(sql, []);
+    }
 }
 
 //// VERSAO COM CLOSE CONNEXION - LINK DIRETO COM DB - NÂO FUNCIONA PAR BROWSER - "HHVAR.c ='?'"

@@ -50,7 +50,7 @@ class _HistoryCardState extends State<HistoryCard> {
             style: TextStyle(color: Colors.white),
           ),
           Text(
-            DateFormat('dd/MM/yyyy').format(widget.basket.basketTime!), /////////////// COLOCAR DATA
+            DateFormat('dd/MM/yyyy').format(widget.basket.basketTime!),
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
                     Text(

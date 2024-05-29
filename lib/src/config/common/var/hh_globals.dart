@@ -3,6 +3,7 @@ import 'package:hh_2/src/models/basket_model.dart';
 import 'package:hh_2/src/models/cat_model.dart';
 import 'package:hh_2/src/models/ean_model.dart';
 import 'package:hh_2/src/models/history_model.dart';
+import 'package:hh_2/src/models/periodic_model.dart';
 import 'package:hh_2/src/models/suggestion_model.dart';
 import 'package:hh_2/src/models/user_model.dart';
 
@@ -32,6 +33,8 @@ abstract class HHGlobals{
   static ValueNotifier<HistoryModel> HHUserHistory = ValueNotifier(HistoryModel());
 
   static ValueNotifier<List<SuggestionModel>> HHUserBook = ValueNotifier([]);
+
+  static ValueNotifier<List<PeriodicModel>> HHPeriodicLists = ValueNotifier([]);
 
   static SourceOrigin HHProdOrigin = SourceOrigin.G;
 

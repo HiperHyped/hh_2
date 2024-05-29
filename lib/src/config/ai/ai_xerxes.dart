@@ -4,17 +4,25 @@
 import 'package:dart_openai/openai.dart';
 import 'package:hh_2/src/config/ai/ai_service.dart';
 import 'package:hh_2/src/config/common/var/hh_globals.dart';
+import 'package:hh_2/src/config/log/log_service.dart';
 import 'package:hh_2/src/models/basket_model.dart';
 import 'package:hh_2/src/models/ean_model.dart';
 import 'package:hh_2/src/models/recipe_model.dart';
 import 'package:hh_2/src/models/search_model.dart';
 import 'package:hh_2/src/models/suggestion_model.dart';
 
+
+
+
 class Xerxes {
+  
   late final AIService _aiService;
-  String model =  "gpt-3.5-turbo"; //gpt-3.5-turbo-16k-0613 //gpt-3.5-turbo //"gpt-4" ;
+  String model =  "gpt-3.5-turbo"; //"gpt-4"; //"gpt-3.5-turbo"; //gpt-3.5-turbo-16k-0613 //gpt-3.5-turbo //"gpt-4" //"gpt-4o"; //;
+
 
   Xerxes() {
+    LogService.init(); //LOG
+    
     _aiService = AIService();  // Inicializando _aiService no construtor
   }
 
@@ -55,6 +63,7 @@ class Xerxes {
 
     // Extraindo a resposta
     String response = chatCompletion.choices[0].message.content.trim();
+    LogService.logInfo("AX1: $response", 'AI');
 
     return response;
   }
@@ -73,12 +82,13 @@ class Xerxes {
     // Filtrar produtos que podem ser ingredientes em uma receita (usando informações em BasketModel)
     List<EanModel> filteredProducts = products.where((product) {
       EanInfo? info = HHGlobals.HHBasket.value.productInfo[product];
+      product.toString();
       return info?.hintStatus == HintStatus.I;
     }).toList();
 
     var productsStr = filteredProducts.map((product) => product.nome).join(', ');
-    print("PRODUCTLIST: $productsStr");
-    print(HHGlobals.HHBasket.value.toString());
+    //print("PRODUCTLIST: $productsStr");
+    //print(HHGlobals.HHBasket.value.toString());
 
 
 
@@ -86,13 +96,22 @@ class Xerxes {
     if (productsStr.isNotEmpty) {
       var systemMessage = 
         """
+        Em uma lista inicial, vou te fornecer um ou mais ingredientes. Sua tarefa será sugerir o nome de uma receita conhecida com esse ingrediente e completar a lista de ingredientes.
+        Ingredientes devem ter nome de produtos encontrados em supermercado. Não diga "clara de ovo", diga "ovo". Não diga "bife de patinho", diga "patinho". 
+        Coloque tudo em uma única linha e siga a formatação dos exemplos abaixo:
+        Exemplo 1: "Lista: Feijão Preto, Linguiça, Cerveja". Resposta: '{Sugestão: {Feijoada}, Lista: {Arroz, Bacon, Couve manteiga, Laranja, Pimenta}}'
+        Exemplo 2: "Lista: Leite, Farinha, Chocolate, Peixe". Resposta: '{Sugestão: {Bolo de Chocolate}, Lista: {Fermento, Ovo, Açúcar}}' 
+        Exemplo 3: "Lista: Arroz". Resposta: '{Sugestão: {Arroz}, Lista: {Arroz, Óleo, Cebola, Alho, Salsinha}}
+        Nunca deixe de responder com alguma receita e sempre responda no formato dos exemplos acima.
+        """;
+
+        /*"""
         Em uma lista inicial, vou te fornecer um ou mais ingredientes. Sua tarefa será sugerir o nome de uma receita consagrada e conhecida com esse ingrediente e completar a lista de ingredientes.
         Ingredientes devem ter nome de produtos encontrados em supermercado. Não diga "clara de ovo", diga "ovo". Não diga "bife de patinho", diga "patinho". 
         Produtos da lista inicial que não forem utilizados devem entrar na lista "Inutilizado". Coloque tudo em uma única linha e siga a formatação dos exemplos abaixo:
         Exemplo 1: "Lista: Feijão Preto, Linguiça, Cerveja". Resposta: '{Sugestão: {Feijoada}, Lista: {Arroz, Bacon, Couve manteiga, Laranja, Pimenta}, Inutilizado: {Cerveja}}'
         Exemplo 2: "Lista: Leite, Farinha, Chocolate, Peixe". Resposta: '{Sugestão: {Bolo de Chocolate}, Lista: {Fermento, Ovo, Açúcar}, Inutilizado: {Peixe}}' 
-        """;
-
+        """;*/
       //Vou lhe fornecer alugns ingredientes. Sua tarefa será escolher desta lista alguns produtos para sugerir o nome de uma receita consagrada e conhecida e os ingredientes adicionais necessários.
 
       var userMessage = productsStr;
@@ -108,12 +127,14 @@ class Xerxes {
       ];
 
       var chatCompletion = await _aiService.createChat(
-        model: "ft:gpt-3.5-turbo-0613:hh:recipe-products:7vWLocC8",  //FT2
+        //model: "ft:gpt-3.5-turbo-0613:hh:recipe-products:7vWLocC8",  //FT2
+        model: model,
         messages: messages,
       );
 
-      print(chatCompletion);
-      print("X1 Tokens: ${chatCompletion.usage.totalTokens.toString()}");
+      LogService.logInfo("X1: ${chatCompletion.choices[0].message.content}", 'AI');
+
+      //print("X1 Tokens: ${chatCompletion.usage.totalTokens.toString()}");
       return chatCompletion.choices[0].message.content;
       } else {return '';}
   }
@@ -126,14 +147,14 @@ class Xerxes {
   // Método para lidar com a resposta do X1 (HANDLE X1) e transformá-la em uma instância de SuggestionModel
   SuggestionModel hx1(String response) {
 
-    print("PX1 INSIDE FIRST: ${response}");
+    //print("hX1 INSIDE FIRST: ${response}");
 
     // Inicializar o modelo de sugestão e copiar a lista de produtos do BasketModel
     SuggestionModel suggestion = SuggestionModel();
     //suggestion.initialProductList = List.from(HHGlobals.HHBasket.value.products);
     
     for (EanModel product in HHGlobals.HHBasket.value.products) {
-      print("EANINFO: ${product.nome} :: ${HHGlobals.HHBasket.value.productInfo[product]!.hintStatus}");
+      //print("EANINFO: ${product.nome} :: ${HHGlobals.HHBasket.value.productInfo[product]!.hintStatus}");
     }
     
     // Filtrar a lista de produtos iniciais (initialProductList) com HintStatus "I"
@@ -149,21 +170,21 @@ class Xerxes {
       }
     }*/
 
-    print("PX1 PRINT INITIAL: ${suggestion.initialProductList}" );
+    //print("PX1 PRINT INITIAL: ${suggestion.initialProductList}" );
 
     // Regex para extrair a sugestão e a lista da resposta
     final suggestionPattern = RegExp(r'Sugestão: {(.*?)}');
     final listPattern = RegExp(r'Lista: {(.*?)}');
     final unusedPattern = RegExp(r'Inutilizado: {(.*?)}');
     
-    print("SUGPAT: $suggestionPattern, LISTPAT: $listPattern");
+    //print("SUGPAT: $suggestionPattern, LISTPAT: $listPattern");
 
     // Encontrar e capturar os grupos de sugestão e lista
     final suggestionMatch = suggestionPattern.firstMatch(response);
     final listMatch = listPattern.firstMatch(response);
     final unusedMatch = unusedPattern.firstMatch(response);
 
-    print("SUG: $suggestionMatch, LIST: $listMatch");
+    //print("SUG: $suggestionMatch, LIST: $listMatch");
 
     // Verificar se os padrões foram encontrados na resposta
     if (suggestionMatch != null && listMatch != null) {
@@ -174,9 +195,11 @@ class Xerxes {
         .map((ingredient) => ingredient.trim())
         .toList();
 
-      print("PX1 INSIDE: ${suggestion.toString()}");
+      //print("PX1 INSIDE: ${suggestion.toString()}");
     } 
     //else { }
+    LogService.logInfo("HX1 INSIDE: ${suggestion.toString()}", 'AI');
+    
     return suggestion;
   }
 
@@ -187,15 +210,15 @@ class Xerxes {
   Future<SuggestionModel> px1(SuggestionModel suggestion) async {
     // Gere a lista total de produtos
     suggestion.createTotalProductList();
-    print("x2 TOTAL: ${suggestion.toString()}");
+    //print("x2 TOTAL: ${suggestion.toString()}");
 
     // Converte a suggestProductList em uma lista de SearchModel
     await suggestion.toSearchModelList();
-    print(" x2 - SUGGESTIONLIST: ${suggestion.suggestProductList}");
+    //print(" x2 - SUGGESTIONLIST: ${suggestion.suggestProductList}");
 
     // Gera os resultados da pesquisa do DB para cada item em searchProductList
     suggestion.generateDBSearchResults();
-    print("x2 DB: ${suggestion.dbSearchResultList}");
+    //print("x2 DB: ${suggestion.dbSearchResultList}");
 
     // Transforme o hintStatus dos produtos de I para U no objeto BasketModel
     for (var product in HHGlobals.HHBasket.value.products) {
@@ -204,6 +227,7 @@ class Xerxes {
         info!.hintStatus = HintStatus.U;
       }
     }
+    LogService.logInfo("PX1 INSIDE: ${suggestion.toString()}", 'AI');
     return suggestion; 
   }
 
@@ -232,7 +256,7 @@ class Xerxes {
     }*/
     
     var userMessage = "RECEITA: ${suggestion.recipe}, INGREDIENTES: ${suggestion.totalProductList.map((e) => e).join(', ')}";
-    print("X2 - UserMessage: $userMessage");
+    //print("X2 - UserMessage: $userMessage");
     var messages = [
       OpenAIChatCompletionChoiceMessageModel(
         content: systemMessage,
@@ -245,12 +269,13 @@ class Xerxes {
     ];
 
     var chatCompletion = await _aiService.createChat(
-      model: "ft:gpt-3.5-turbo-0613:hh:recipe-steps:7vYfv166",
+      //model: "ft:gpt-3.5-turbo-0613:hh:recipe-steps:7vYfv166",
+      model: model,
       messages: messages,
     );
 
-    print(" FT3!!!! X2_2 RESPOSTA: ${chatCompletion.choices[0].message.content}");
-    print("FT3!!!! X2_2 Tokens: ${chatCompletion.usage.totalTokens.toString()}");
+    //print(" FT3!!!! X2_2 RESPOSTA: ${chatCompletion.choices[0].message.content}");
+    //print("FT3!!!! X2_2 Tokens: ${chatCompletion.usage.totalTokens.toString()}");
 
     // Atribui a descrição à RecipeModel
     RecipeModel recipeModel = RecipeModel();
@@ -258,11 +283,13 @@ class Xerxes {
     recipeModel.ingredients = suggestion.dbSearchResultList;
     recipeModel = await ax4(recipeModel);
     recipeModel.description = px2(chatCompletion.choices[0].message.content);
-    print('FT3!!!! X2_2 ---> RECEITA: ${recipeModel.recipeName}');
-      for (var passo in recipeModel.description) {
-          print("PASSO: $passo");
-      }
-    print("FT3!!!! X2_2 TERMINADO");
+    
+    LogService.logInfo('X2 ---> RECEITA: ${recipeModel.recipeName}', 'AI');
+    
+    //  for (var passo in recipeModel.description) {
+    //      print("PASSO: $passo");
+    //  }
+    //print("FT3!!!! X2_2 TERMINADO");
 
     if (onCompleted != null) onCompleted();
     return recipeModel;
@@ -293,7 +320,8 @@ class Xerxes {
   /// ax2_1 ///
   /////////////
   Future<bool> ax2_1(String receita, List<String> listaReceitas) async {
-
+    
+    LogService.logInfo("AX2_1! ==> ENTREI", 'AI');
     // Se a lista de receitas estiver vazia, retorne false imediatamente
     if (listaReceitas.isEmpty) {
       return false;
@@ -301,10 +329,13 @@ class Xerxes {
 
     String receitas = listaReceitas.join(', ');
 
+
+
     var systemMessage = 
       """
-      Vou lhe dar uma receita. Quero que voce me diga se existe alguma receita muito parecida ou semanticamente igual em uma lista de receitas. 
-      Responda somente 1 para dizer que existe ou 0 para dizer que não existe. Mesmo em línguas diferentes.
+
+      Vou lhe dar uma receita. Quero que você me diga, com '1' ou '0', se existe alguma receita muito parecida ou semanticamente igual em uma lista de receitas que vou fornecer. 
+      Use '1' para sim e '0' para não, mesmo em línguas diferentes.
       Exemplo 1: RECEITA: Risoto de Camarão, LISTA RECEITAS: [Risoto Camarão] ==> Resposta: 1
       Exemplo 2: RECEITA: Bolo de Cenoura, LISTA RECEITAS: [Bolo de Chocolate, Bolo de Laranja] ==> Resposta: 0
       Exemplo 3: RECEITA: Hot Dog, LISTA RECEITAS: [Hambúrguer, Cachorro Quente] ==> Resposta: 1
@@ -330,13 +361,13 @@ class Xerxes {
     ];
 
     var chatCompletion = await _aiService.createChat(
-      model: model,
+      model:  "ft:gpt-3.5-turbo-0613:hh:recipe-class:7vB97XDH", //model,
       messages: messages,
     );
 
-    print("Tokens: ${chatCompletion.usage.totalTokens}");
-    print("AX2_1 EXISTE?: ${chatCompletion.choices[0].message.content.trim()}, RECEITA:  $receita, LISTA RECEITAS: $receitas");
+    //("AX2_1 Tokens: ${chatCompletion.usage.totalTokens}");
     // Assume-se que a resposta será '1' para verdadeiro e '0' para falso.
+    LogService.logInfo("AX2_1 => ${chatCompletion.choices[0].message.content.trim()}", 'AI');
     return chatCompletion.choices[0].message.content.trim() == '1';
   }
 
@@ -365,12 +396,13 @@ class Xerxes {
 
       var chatCompletion = await _aiService.createChat(
         model: "ft:gpt-3.5-turbo-0613:hh:product-class:7vxjWkX0",
+        //model: model,
         messages: messages,
       );
 
-      print("Tokens:" + chatCompletion.usage.totalTokens.toString());
+      //print("Tokens:" + chatCompletion.usage.totalTokens.toString());
       String response = chatCompletion.choices[0].message.content.trim().replaceAll(" > ", "");
-      print("AX3 RESPONSE:: $response");
+      LogService.logInfo("AX3 RESPONSE:: $response", 'AI');
       return response;
     }
 
@@ -430,7 +462,7 @@ class Xerxes {
         messages: messages,
       );
 
-      print("Tokens:" + chatCompletion.usage.totalTokens.toString());
+      LogService.logInfo("AX3_1 RESPONSE:: ${chatCompletion.choices[0].message.content.trim()}", 'AI');
       return chatCompletion.choices[0].message.content.trim();
     }
   
@@ -460,10 +492,11 @@ class Xerxes {
     // Chamada ao ChatCompletion da OpenAI usando o modelo específico
     var chatCompletion = await _aiService.createChat(
       model: "ft:gpt-3.5-turbo-0613:hh:recipe-class:7vB97XDH",
+      //model: model,
       messages: messages,
     );
 
-    print("Tokens: ${chatCompletion.usage.totalTokens.toString()}");
+    //print("Tokens: ${chatCompletion.usage.totalTokens.toString()}");
 
     // Extração da resposta e divisão nas categorias
     var responseContent = chatCompletion.choices[0].message.content.trim();
@@ -476,7 +509,8 @@ class Xerxes {
       recipe.catRecipe = categories[0];
     }
 
-    print("AX4::::: ${recipe.catRecipe}  ; ${recipe.subCatRecipe}");
+    //print("AX4::::: ${recipe.catRecipe}  ; ${recipe.subCatRecipe}");
+    LogService.logInfo("AX4::::: ${recipe.catRecipe}  ; ${recipe.subCatRecipe}", 'AI');
 
     return recipe;
   }  

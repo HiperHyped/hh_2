@@ -1,10 +1,13 @@
 import 'package:hh_2/src/config/common/var/hh_summary.dart';
 import 'package:hh_2/src/config/db/db_service.dart';
+import 'package:hh_2/src/config/log/log_service.dart';
 
 class DBSummary {
   final DBService _dbService;
 
-  DBSummary(this._dbService);
+  DBSummary(this._dbService){
+    LogService.init();
+  }
 
   Future<void> fetchSummary(int userId) async {
     final sql = 'SELECT * FROM ReportSummary WHERE user_id = ?';
@@ -13,7 +16,8 @@ class DBSummary {
 
     if (results.isNotEmpty) {
       var summary = results.first;
-      print("ANTES: ${summary.toString()}");
+      LogService.logInfo("ANTES: ${summary.toString()}", "REPORT");
+ 
 
       // Atualizar os valores estáticos em HHSummary com os dados da consulta
       HHSummary.userLogin = summary['user_login'];
@@ -42,7 +46,7 @@ class DBSummary {
       HHSummary.E = double.parse(summary['E'].toString());
       HHSummary.pE = double.parse(summary['pE'].toString());
 
-      print("DEPOIS: ${HHSummary.toStaticString()}");
+      LogService.logInfo("DEPOIS: ${HHSummary.toStaticString()}", "REPORT");
     }
   }
 
@@ -51,8 +55,6 @@ class DBSummary {
     final values = [userId];
     final results = await _dbService.query(sql, values);
 
-    //print("RESULT FETCH TIMESUMMARY:/n");
-    //print(results.first);
     if (results.isNotEmpty) {
       var summary = results.first;
       
@@ -67,11 +69,12 @@ class DBSummary {
       for (var hour in ['00h', '03h', '06h', '09h', '12h', '15h', '18h', '21h']) {
         hourCounts[hour] = int.tryParse(summary[hour].toString()) ?? 0;
       }
+
       TimeSummary timeSummary = TimeSummary(weekCounts: weekCounts, hourCounts: hourCounts);
-      
       HHSummary.setTimeSummary(timeSummary);
-      print(HHSummary.timeSummary!.weekCounts);
-      print(HHSummary.timeSummary!.hourCounts);
+
+      LogService.logInfo("WEEKS: ${HHSummary.timeSummary!.weekCounts}", "REPORT");
+      LogService.logInfo("HOURS: ${HHSummary.timeSummary!.hourCounts}", "REPORT");
 
       // Encontrar o dia da semana mais comum
       var commonDay = timeSummary.weekCounts.entries.reduce((a, b) => a.value > b.value ? a : b).key;
@@ -82,8 +85,9 @@ class DBSummary {
       HHSummary.horarioMaisComum = commonHour;
 
       // Impressão para verificação
-      print('Dia mais comum: $commonDay, com ${timeSummary.weekCounts[commonDay]} ocorrências');
-      print('Hora mais comum: $commonHour, com ${timeSummary.hourCounts[commonHour]} ocorrências');
+      LogService.logInfo('Dia mais comum: $commonDay, com ${timeSummary.weekCounts[commonDay]} ocorrências', "REPORT");
+      LogService.logInfo('Hora mais comum: $commonHour, com ${timeSummary.hourCounts[commonHour]} ocorrências', "REPORT");
+
     } 
   }
 }

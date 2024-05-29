@@ -1,11 +1,12 @@
 import 'package:hh_2/src/config/common/var/hh_settings.dart';
 import 'package:hh_2/src/config/db/db_service.dart';
+import 'package:hh_2/src/config/log/log_service.dart';
 
 
 class DBSettings {
   final DBService _dbService;
 
-  DBSettings(this._dbService);
+  DBSettings(this._dbService) {LogService.init();}
 
   Future<void> fetchSettings(int userId) async {
     final sql = 'SELECT * FROM Settings WHERE user_id = ?';
@@ -14,7 +15,8 @@ class DBSettings {
 
     if (results.isNotEmpty) {
       var settings = results.first;
-      print("ANTES: ${settings.toString()}");
+      LogService.logInfo("ANTES: ${settings.toString()}", "SETTINGS");
+
 
       HHSettings.hintSuggest = _valueToBool(settings['hint_suggest']);
       HHSettings.gridView = _valueToBool(settings['grid_view']);
@@ -23,7 +25,8 @@ class DBSettings {
       HHSettings.gridLines = int.parse(settings['grid_lines'].toString());
       HHSettings.historyLimit = int.parse(settings['history_limit'].toString());
 
-      print("DEPOIS: hintSuggest: ${HHSettings.hintSuggest},  gridView: ${HHSettings.gridView },  classCriteria: ${HHSettings.classCriteria},  gridLimit: ${HHSettings.gridLimit}, gridLines: ${HHSettings.gridLines}, historyLimit: ${HHSettings.historyLimit}");
+      LogService.logInfo("DEPOIS: hintSuggest: ${HHSettings.hintSuggest},  gridView: ${HHSettings.gridView },  classCriteria: ${HHSettings.classCriteria},  gridLimit: ${HHSettings.gridLimit}, gridLines: ${HHSettings.gridLines}, historyLimit: ${HHSettings.historyLimit}", "SETTINGS");
+
     }
   }
 

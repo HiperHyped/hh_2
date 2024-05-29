@@ -1,6 +1,7 @@
 import 'package:hh_2/src/config/common/var/hh_globals.dart';
 import 'package:hh_2/src/config/common/var/hh_var.dart';
 import 'package:hh_2/src/config/db/db_service.dart';
+import 'package:hh_2/src/config/log/log_service.dart';
 import 'package:hh_2/src/models/basket_model.dart';
 import 'package:hh_2/src/models/ean_model.dart';
 import 'package:hh_2/src/models/user_model.dart';
@@ -8,7 +9,10 @@ import 'package:hh_2/src/models/user_model.dart';
 class DBBasket {
   final DBService _dbService;
 
-  DBBasket(this._dbService);
+  DBBasket(this._dbService){
+    LogService.init();
+  }
+  
 
   ////////////CREATE BASKET
   Future<void> createBasket(int userId) async {
@@ -93,8 +97,10 @@ class DBBasket {
         VALUES (${HHVar.c}, ${HHVar.c}, 1, ${HHVar.c}, CONVERT_TZ(UTC_TIMESTAMP(), '+00:00', '-03:00'), ${HHVar.c}, ${HHVar.c})
       ''';
 
-      print("ADD PRODUCT - SourceOrigin: ${sourceOrigin.toString().split('.').last}");
-      print("ADD PRODUCT - HintStatus: ${hintStatus.toString().split('.').last}");
+      LogService.logInfo("ADD PRODUCT - SourceOrigin: ${sourceOrigin.toString().split('.').last}, HintStatus: ${hintStatus.toString().split('.').last}","DB");
+ 
+
+      
       await _dbService.query(
         sqlInsert, 
         [

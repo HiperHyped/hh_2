@@ -4,9 +4,12 @@ import 'package:hh_2/src/config/common/var/hh_colors.dart';
 import 'package:hh_2/src/config/common/var/hh_globals.dart';
 import 'package:hh_2/src/config/common/var/hh_notifiers.dart';
 import 'package:hh_2/src/config/common/var/hh_settings.dart';
+import 'package:hh_2/src/config/common/var/hh_var.dart';
 import 'package:hh_2/src/config/db/db_book.dart';
 import 'package:hh_2/src/config/db/db_history.dart';
+import 'package:hh_2/src/config/db/db_periodic.dart';
 import 'package:hh_2/src/models/history_model.dart';
+import 'package:hh_2/src/models/periodic_model.dart';
 import 'package:hh_2/src/models/recipe_model.dart';
 import 'package:hh_2/src/models/suggestion_model.dart';
 import 'package:hh_2/src/pages/basket/basket_bar.dart';
@@ -14,6 +17,7 @@ import 'package:hh_2/src/pages/book/book_bar.dart';
 import 'package:hh_2/src/pages/hint/hint_bar.dart';
 import 'package:hh_2/src/pages/history/history_bar.dart';
 import 'package:hh_2/src/pages/pay/pay_bar.dart';
+import 'package:hh_2/src/pages/periodic/periodic_bar.dart';
 import 'package:hh_2/src/pages/prodpage/prod_page.dart';
 import 'package:hh_2/src/pages/settings/setting_bar.dart'; // Ajuste a rota conforme a localização da SettingBar
 
@@ -37,7 +41,9 @@ class _BaseScreenState extends State<BaseScreen> {
 
   
   bool showBasketBar = false;
+  bool showPromoBar = false;
   bool showHintBar = false;
+  bool showCalendarBar = false; //Calendar
   bool showHistoryBar = false;
   bool showBookBar = false;
   bool showSettingBar = false;
@@ -45,12 +51,14 @@ class _BaseScreenState extends State<BaseScreen> {
 
   late final DBHistory _dbHistory = DBHistory();
   late final DBBook _dbBook = DBBook();
+  late final DBPeriodic _dbPeriodic = DBPeriodic();
   
   @override
   void initState() {
     super.initState();
-    loadHistoryOnce();
-    loadUserRecipes();
+    _dbHistory.loadHistoryOnce();
+    _dbBook.loadUserRecipes();
+    _dbPeriodic.loadPeriodicOnce(); // Periodic List
 
     //HHNotifiers.counter['basketItemCount']!.value = HHGlobals.HHBasket.value.productQuantities.length;
     //HHGlobals.HHBasket.value.products
@@ -68,23 +76,6 @@ class _BaseScreenState extends State<BaseScreen> {
     });
   }
 
-  void loadHistoryOnce() async {
-      HistoryModel history = await _dbHistory.getBasketHistory(HHGlobals.HHUser.userId);
-      HHGlobals.HHUserHistory.value = history;
-      HHNotifiers.counter[CounterType.HistoryCount]!.value = history.basketHistory.length;
-    }
-
-  /*void loadHistoryOnce() async {
-    HistoryModel history = await _dbHistory.getBasketSummary(HHGlobals.HHUser.userId);
-    HHGlobals.HHUserHistory.value = history;
-    HHNotifiers.counter[CounterType.HistoryCount]!.value = history.basketHistory.length;
-  }*/
-
-  void loadUserRecipes() async {
-      List<SuggestionModel> suggestions = await _dbBook.getSuggestionsByUserId(HHGlobals.HHUser.userId);
-      HHGlobals.HHUserBook.value = suggestions;
-      HHNotifiers.counter[CounterType.BookCount]!.value = suggestions.length;
-  }
 
   @override
   void dispose() {
@@ -104,23 +95,39 @@ class _BaseScreenState extends State<BaseScreen> {
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
-              height: 100,
+              height: HHVar.barHeight,
               child: BasketBar(totalPriceNotifier: totalPriceNotifier),
+            ),
+          ),
+        if (showPromoBar)
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              height: HHVar.barHeight,
+              //child: CalendarBar(),
             ),
           ),
         if (showHistoryBar)
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
-              height: 100,
+              height: HHVar.barHeight,
               child: HistoryBar(),
+            ),
+          ),
+        if (showCalendarBar)
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              height: HHVar.barHeight,
+              child: PeriodicBar(),
             ),
           ),
         if (showHintBar)
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
-              height: 200,
+              height: 2*HHVar.barHeight,
               child: HintBar(),
             ),
           ),
@@ -128,7 +135,7 @@ class _BaseScreenState extends State<BaseScreen> {
           Align(
               alignment: Alignment.bottomCenter,
               child: Container(
-                  height: 200,
+                  height: 2*HHVar.barHeight,
                   child: BookBar(),
               ),
           ),
@@ -183,18 +190,24 @@ class _BaseScreenState extends State<BaseScreen> {
                   if (HHGlobals.HHBasket.value.isNotEmpty) showBasketBar = !showBasketBar;
                   break;
                 case 1:
+                  showPromoBar = !showPromoBar;
+                break;                 
+                case 2:
                   if (HHGlobals.HHUserHistory.value.basketHistory.isNotEmpty) showHistoryBar = !showHistoryBar;
                   break;
-                case 2:
+                case 3:
+                  showCalendarBar = !showCalendarBar;
+                break;                 
+                case 4:
                   if (HHGlobals.HHSuggestionList.value.isNotEmpty) showHintBar = !showHintBar;
                   break;
-                case 3:
+                case 5:
                    if (HHGlobals.HHUserBook.value.isNotEmpty) showBookBar = !showBookBar;
                   break;
-                case 4:
+                case 6:
                   showSettingBar = !showSettingBar;
                 break;
-                case 5:
+                case 7:
                   showPayBar = !showPayBar;
                   break;
                 default:
@@ -204,7 +217,9 @@ class _BaseScreenState extends State<BaseScreen> {
               // O usuário tocou em um botão diferente.
               // Portanto, ocultamos todas as barras e mostramos a barra correspondente.
               showBasketBar = false;
+              showPromoBar = false;
               showHintBar = false;
+              showCalendarBar = false;
               showHistoryBar = false;
               showSettingBar = false;
               showPayBar = false;
@@ -216,18 +231,24 @@ class _BaseScreenState extends State<BaseScreen> {
                   if (HHGlobals.HHBasket.value.isNotEmpty) showBasketBar = true;
                   break;
                 case 1:
+                  showPromoBar = true;
+                  break;  
+                case 2:
                   if (HHGlobals.HHUserHistory.value.basketHistory.isNotEmpty) showHistoryBar = true;
                   break;
-                case 2:
+                case 3:
+                  showCalendarBar = true;
+                  break;     
+                case 4:
                   if (HHGlobals.HHSuggestionList.value.isNotEmpty) showHintBar = true;
                   break;
-                case 3:
+                case 5:
                   if (HHGlobals.HHUserBook.value.isNotEmpty) showBookBar = true;
                   break;  
-                case 4:
+                case 6:
                   showSettingBar = true;
                   break;                
-                case 5:
+                case 7:
                   showPayBar = true;
                   break;
                 default:
@@ -264,6 +285,12 @@ class _BaseScreenState extends State<BaseScreen> {
               ),
             label: 'Carrinho',
           ),
+
+          // Promoção
+          const BottomNavigationBarItem(
+            icon: Icon(size: 40, Icons.monetization_on_outlined), // ícone de pagamento
+            label: 'Promoção',
+          ),
      
           // Historico
           BottomNavigationBarItem(
@@ -284,13 +311,38 @@ class _BaseScreenState extends State<BaseScreen> {
                   showBadge: count >= 1 ? true : false,
                   child: const Icon(
                     size: 40,
-                    Icons.history
+                    //color: Colors.blueGrey,
+                    Icons.calendar_month_outlined
                   ),
                 ),
               ),
             label: 'Histórico',
           ),
 
+          // Periodic
+          BottomNavigationBarItem(
+            icon: ValueListenableBuilder<int>(
+              valueListenable: HHNotifiers.counter[CounterType.PeriodicCount]!,
+              builder: (context, count, _) => badges.Badge(
+                badgeStyle: const badges.BadgeStyle(
+                  badgeColor: Colors.brown,
+                  shape: badges.BadgeShape.circle,
+                  padding: EdgeInsets.all(6.0),
+                ),
+                badgeContent: Text(
+                  count.toString(),
+                  style: const TextStyle(color: Colors.white),
+                ),
+                position: badges.BadgePosition.topEnd(top: -5, end: -0),
+                showBadge: count >= 1 ? true : false,
+                child: const Icon(
+                  size: 40,
+                  Icons.history,
+                ),
+              ),
+            ),
+            label: 'Periódico',
+          ),
 
           // Hint!
           BottomNavigationBarItem(

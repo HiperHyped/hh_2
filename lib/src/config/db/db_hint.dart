@@ -175,6 +175,30 @@ Future<void> updateCatSuggest(SuggestionModel suggestionModel) async {
     await _dbService.query(sql, values);
   }
 
+   /*Future<List<SuggestionModel>> getSuggestions(int basketId) async {
+    String sql = '''
+      SELECT recipe_name, cat_suggest, subcat_suggest 
+      FROM Suggest 
+      WHERE basket_id = ${HHVar.c}
+    ''';
+
+    List<dynamic> values = [basketId];
+    var results = await _dbService.query(sql, values);
+
+    List<SuggestionModel> suggestions = [];
+    for (var row in results) {
+      SuggestionModel suggestion = SuggestionModel(
+        recipe: row['recipe_name'],
+        recipeModel: RecipeModel(
+          catRecipe: row['cat_suggest'],
+          subCatRecipe: row['subcat_suggest']
+        ),
+        // Outros campos que você precisa mapear, se necessário
+      );
+      suggestions.add(suggestion);
+    }
+    return suggestions;
+  }*/
 
 }
 

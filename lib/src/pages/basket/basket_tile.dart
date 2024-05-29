@@ -12,7 +12,7 @@ import 'package:hh_2/src/pages/grid/components/prod_card.dart';
 class BasketTile extends StatefulWidget {
   final EanModel product;
   final int count;
-  final SourceOrigin sourceOrigin = SourceOrigin.C;
+  final SourceOrigin sourceOrigin = SourceOrigin.G;
 
   BasketTile({Key? key, required this.product, required this.count})
       : super(key: key);

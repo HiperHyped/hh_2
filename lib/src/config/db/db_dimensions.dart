@@ -2,13 +2,14 @@
 
 import 'package:hh_2/src/config/common/var/hh_dimensions.dart';
 import 'package:hh_2/src/config/db/db_service.dart';
+import 'package:hh_2/src/config/log/log_service.dart';
 import 'package:hh_2/src/models/dimension_model.dart';
 
 
 class DBDimensions {
   final DBService _dbService;
 
-  DBDimensions(this._dbService);
+  DBDimensions(this._dbService) {LogService.init();}
 
   Future<void> loadUserDimensions(int userId) async {
     const sql = 'SELECT * FROM User_Profile WHERE user_id = ?';
@@ -49,7 +50,6 @@ class DBDimensions {
     Map<String, List<DimensionModel>> dimensionsByCategory = {};
     for (var row in results) {
       String category = row['sigla'];
-      print("CATEGORIES: $category");
       // Assumindo que temos colunas dimension_value1 até dimension_value9 para cada dimensão em User_Profile_Cat
       List<DimensionModel> dimensions = [];
       for (var i = 1; i <= 9; i++) {

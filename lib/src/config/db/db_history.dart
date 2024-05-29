@@ -1,3 +1,4 @@
+import 'package:hh_2/src/config/common/var/hh_globals.dart';
 import 'package:hh_2/src/config/common/var/hh_notifiers.dart';
 import 'package:hh_2/src/config/common/var/hh_settings.dart';
 import 'package:hh_2/src/config/common/var/hh_var.dart';
@@ -13,6 +14,18 @@ class DBHistory {
 
   final DBService _dbService = DBService();
   final DBSearch _dbSearch = DBSearch();
+
+  void loadHistoryOnce() async {
+    HistoryModel history = await getBasketHistory(HHGlobals.HHUser.userId);
+    HHGlobals.HHUserHistory.value = history;
+    HHNotifiers.counter[CounterType.HistoryCount]!.value = history.basketHistory.length;
+  }
+
+  /*void loadHistoryOnce() async {
+    HistoryModel history = await _dbHistory.getBasketSummary(HHGlobals.HHUser.userId);
+    HHGlobals.HHUserHistory.value = history;
+    HHNotifiers.counter[CounterType.HistoryCount]!.value = history.basketHistory.length;
+  }*/
 
   //FUNÇÂO ORIGINAL
   // fetchHistory irá pegar o histórico de cestas do banco de dados
@@ -73,8 +86,34 @@ class DBHistory {
     return history;
   }
 
+  // Função B
+  Future<void> getBasketDetails(int basketId, HistoryModel history) async {
+    String sql = "SELECT * FROM Basket_List WHERE basket_id = ?";
+
+    var results = await _dbService.query(sql, [basketId]);
+
+    BasketModel? basket = history.basketHistory.firstWhere((b) => b.basket_id == basketId);
+
+    if (basket != null && results.isNotEmpty) {
+      for (var rowProduct in results) {
+        String ean = rowProduct['prod_ean'].toString();
+        double quantity = double.parse(rowProduct['prod_qty']);
+
+        List<EanModel> eanResults = await _dbSearch.searchProductV2(SearchModel(ean: ean, searchType: "ean"), 1);
+
+        if (eanResults.isNotEmpty) {
+          var product = eanResults[0];
+          for (int i = 0; i < quantity; i++) {
+            basket.products.add(product);
+          }
+        }
+      }
+    }
+  }
+}
+
   // Função A
-  Future<HistoryModel> getBasketSummary(int userId) async {
+  /*Future<HistoryModel> getBasketSummary(int userId) async {
     HistoryModel history = HistoryModel();
     history.user_id = userId;
 
@@ -101,30 +140,4 @@ class DBHistory {
     }
 
     return history;
-  }
-
-  // Função B
-  Future<void> getBasketDetails(int basketId, HistoryModel history) async {
-    String sql = "SELECT * FROM Basket_List WHERE basket_id = ?";
-
-    var results = await _dbService.query(sql, [basketId]);
-
-    BasketModel? basket = history.basketHistory.firstWhere((b) => b.basket_id == basketId);
-
-    if (basket != null && results.isNotEmpty) {
-      for (var rowProduct in results) {
-        String ean = rowProduct['prod_ean'].toString();
-        double quantity = double.parse(rowProduct['prod_qty']);
-
-        List<EanModel> eanResults = await _dbSearch.searchProductV2(SearchModel(ean: ean, searchType: "ean"), 1);
-
-        if (eanResults.isNotEmpty) {
-          var product = eanResults[0];
-          for (int i = 0; i < quantity; i++) {
-            basket.products.add(product);
-          }
-        }
-      }
-    }
-  }
-}
+  }*/

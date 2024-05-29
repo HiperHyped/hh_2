@@ -248,7 +248,7 @@ class DBSearch {
         whereClause = "LOWER(P.prod_name) LIKE LOWER(${HHVar.c})";
         String nomeArg = palavras.map((palavra) => '$palavra%').join();
         whereArg = [nomeArg, HHGlobals.HHUser.uf,];
-        print("WHEREARGS: $whereArg");
+        //print("WHEREARGS: $whereArg");
         break;
       case 'ean':
         whereClause = "LOWER(P.prod_ean) = LOWER(${HHVar.c})";
@@ -349,7 +349,7 @@ Future<List<EanModel>> searchProductV2(SearchModel searchProduct, int inputLimit
         ];
     }
 
-    print("SEARCHPRODUCTV2:::  ${searchProduct.searchType} ==> $arguments");
+    //print("SEARCHPRODUCTV2:::  ${searchProduct.searchType} ==> $arguments");
 
     // Chamar a procedure diretamente
     final results = await _dbService.query('CALL GetClosestProductsByCriteriaV2(?, ?, ?, ?, ?)', arguments);

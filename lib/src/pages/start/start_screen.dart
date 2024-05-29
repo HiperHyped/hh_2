@@ -8,10 +8,12 @@ import 'package:hh_2/src/config/common/var/hh_settings.dart';
 import 'package:hh_2/src/config/common/var/hh_summary.dart';
 import 'package:hh_2/src/config/db/db_basket.dart';
 import 'package:hh_2/src/config/db/db_dimensions.dart';
+import 'package:hh_2/src/config/db/db_periodic.dart';
 import 'package:hh_2/src/config/db/db_service.dart';
 import 'package:hh_2/src/config/db/db_settings.dart';
 import 'package:hh_2/src/config/db/db_summary.dart';
 import 'package:hh_2/src/config/db/db_user.dart';
+import 'package:hh_2/src/config/log/log_service.dart';
 import 'package:hh_2/src/config/xml/xml_s3_data.dart';
 import 'package:hh_2/src/models/basket_model.dart';
 import 'package:hh_2/src/models/cat_model.dart';
@@ -19,15 +21,18 @@ import 'package:hh_2/src/models/user_model.dart';
 import 'package:hh_2/src/pages/base/base_screen.dart';
 import 'package:hh_2/src/config/common/var/hh_globals.dart';
 import 'package:hh_2/src/pages/user/sign_up.dart';
+import 'package:logging/logging.dart';
 
 // INICIO STARTPAGE
 class StartPage extends StatefulWidget {
   const StartPage({super.key});
+  
   @override
   State<StartPage> createState() => _StartPageState();
 }
 
 class _StartPageState extends State<StartPage> {
+  
 
   // Adicione um ValueNotifier para controlar o status de carregamento.
   ValueNotifier<bool> _isLoading = ValueNotifier<bool>(false);
@@ -59,20 +64,23 @@ class _StartPageState extends State<StartPage> {
         // Pega os Settings do Usuário
         await _dbSettings.fetchSettings(user.userId);
 
-        print("SETTINGS==> hint ${HHSettings.hintSuggest}, gridView: ${HHSettings.gridView}, classCriteria: ${HHSettings.classCriteria}, gridLimit:${HHSettings.gridLimit}, gridLines:${HHSettings.gridLines}, , historyLimit:${HHSettings.historyLimit}");
-
+        //LogService.logInfo("SETTINGS==> hint ${HHSettings.hintSuggest}, //n gridView: ${HHSettings.gridView}, //n classCriteria: ${HHSettings.classCriteria}, gridLimit:${HHSettings.gridLimit}, gridLines:${HHSettings.gridLines}, , historyLimit:${HHSettings.historyLimit}", "START");
+        
         // Pega o Report Summary do Usuário
-        //await _dbService.query('CALL GenerateCompleteReport()');
+        await _dbService.call('GenerateTimeSummary');
+        await _dbService.call('GenerateCompleteReport');
         await _dbSummary.fetchSummary(user.userId);
         await _dbSummary.fetchTimeSummary(user.userId);
-        HHSummary.toStaticString();
+        //HHSummary.toStaticString();
 
 
+        await _dbService.call('CalculateUserProfilesBySigla');
         // Carrega as dimensões gerais do perfil do usuário
         await _dbDimensions.loadUserDimensions(user.userId);
         // Carrega as dimensões do perfil do usuário por categoria
         await _dbDimensions.loadUserDimensionsByCategory(user.userId);
-        print(HHDimensions.toStaticString());
+
+        LogService.logInfo("DIMENSIONS: ${HHDimensions.toStaticString()}", "START");
 
         // Se o usuário for verificado, redirecione para a página base
         HHGlobals.HHUser = user;
@@ -86,7 +94,7 @@ class _StartPageState extends State<StartPage> {
                 newBasket.basket_id = lastBasketId; // Atualizar BasketModel com o novo ID
                 newBasket.user_id = user.userId; // Atualizar BasketModel com o novo user_id
                 newBasket.basketTime = await _dbBasket.getDateTime(user.userId);
-                print("TIME: ${newBasket.basketTime}");
+              
                 HHGlobals.HHBasket.value = newBasket; // Atualizar HHBasket global com o novo BasketModel                
             }
         }
@@ -99,11 +107,14 @@ class _StartPageState extends State<StartPage> {
         HHNotifiers.counter[CounterType.HintCount]!.value=0;
         HHNotifiers.counter[CounterType.HistoryCount]!.value = 0;
         HHNotifiers.counter[CounterType.BookCount]!.value = 0;
-        HHNotifiers.printAll();
+        HHNotifiers.counter[CounterType.PeriodicCount]!.value = 0;
+        //HHNotifiers.printAll();
 
-        print("SIGN IN: ${HHGlobals.HHUser}");
-        print("NEW BASKET ID: ${HHGlobals.HHBasket.value.basket_id}");
-        print("NEW BASKET USER ID: ${HHGlobals.HHBasket.value.user_id}");
+        LogService.logInfo("SIGN IN: ${HHGlobals.HHUser}", "START");
+        LogService.logInfo("NEW BASKET ID: ${HHGlobals.HHBasket.value.basket_id}", "START");
+        LogService.logInfo("NEW BASKET USER ID: ${HHGlobals.HHBasket.value.user_id}", "START");
+ 
+
 
        Navigator.of(context).pop(); // Fecha o AlertDialog
 
@@ -159,11 +170,12 @@ class _StartPageState extends State<StartPage> {
   final _loginController = TextEditingController();
   final _passwordController = TextEditingController();
   late final DBService _dbService = DBService();
-  late final DBUser _dbUser; // Note que agora _dbUser é declarado como late
+  late final DBUser _dbUser; 
   late final DBBasket _dbBasket;
   late final DBSettings _dbSettings;
   late final DBSummary _dbSummary;
   late final DBDimensions _dbDimensions;
+  //late final DBPeriodic _dbPeriodic;
   
 
   
@@ -172,6 +184,7 @@ class _StartPageState extends State<StartPage> {
   @override
   void initState() {
     super.initState();
+    LogService.init();
 
     // Cat Model XML
 
@@ -184,6 +197,7 @@ class _StartPageState extends State<StartPage> {
     _dbSettings = DBSettings(_dbService);
     _dbSummary = DBSummary(_dbService);
     _dbDimensions =DBDimensions(_dbService);
+    //_dbPeriodic = DBPeriodic();
 
     HHGlobals.HHUser.login.isEmpty ? 
       _loginController.text = '' : 
@@ -193,7 +207,8 @@ class _StartPageState extends State<StartPage> {
       _passwordController.text = '' : 
       _passwordController.text = HHGlobals.HHUser.password;
 
-    print("LOGIN: ${HHGlobals.HHUser.login}");
+
+    LogService.logInfo("LOGIN: ${HHGlobals.HHUser.login}", "START");
   }
 
 //IA 16-05-23

@@ -27,18 +27,18 @@ class SuggestionModel {
     // Limpa searchProductList antes de começar a adicionar novos itens.
     searchProductList.clear();
     
-    print('Início do método toSearchModelList');
+    //print('Início do método toSearchModelList');
     
     List<Future<SearchModel>> futureList = [];
     
-    print('Iterando por suggestProductList');
+    //print('Iterando por suggestProductList');
     for (var product in suggestProductList) {
       
 
       futureList.add(() async {
         String sigla = await x.ax3(product);
-        print('Produto: $product');
-        print('Sigla obtida: $sigla');
+        //print('Produto: $product');
+        //print('Sigla obtida: $sigla');
         
         return SearchModel(
           searchType: "prod_cat",
@@ -51,12 +51,12 @@ class SuggestionModel {
     // Espera todos os Futures serem completados
     List<SearchModel> results = await Future.wait(futureList);
     
-    print('Todos os Futures estão completos');
+    //print('Todos os Futures estão completos');
     
     // Adiciona os resultados à lista searchProductList
     searchProductList.addAll(results);
     
-    print('searchProductList atualizada');
+    //print('searchProductList atualizada');
   }
 
   // Método para criar a lista totalProductList
@@ -71,9 +71,9 @@ class SuggestionModel {
 
   // Método que realiza a pesquisa no banco de dados para cada item em searchProductList
   Future<void> generateDBSearchResults() async {
-    print("SEARCHPORDUCT LIST:  $searchProductList");
+    //print("SEARCHPORDUCT LIST:  $searchProductList");
     for (var searchProduct in searchProductList) {
-      print("SuggestModel DB SEARCHPRODUCT:  ${searchProduct.searchType} ==> ${searchProduct.nome}");
+      //print("SuggestModel DB SEARCHPRODUCT:  ${searchProduct.searchType} ==> ${searchProduct.nome}");
       var searchResult = await _dbSearch.searchProductV2(searchProduct, 1);  //somente a 1a resposta
       dbSearchResultList.addAll(searchResult);
     }
@@ -81,7 +81,7 @@ class SuggestionModel {
   
   @override
   String toString() {
-    return 'SuggestionModel{'
+    return 'SuggestionModel {'
       'recipe: $recipe, '
       'initialProductList: ${initialProductList.map((product) => product.nome).join(', ')}, '
       'suggestProductList: $suggestProductList, '

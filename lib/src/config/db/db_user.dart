@@ -1,12 +1,13 @@
 import 'package:hh_2/src/config/common/var/hh_var.dart';
 import 'package:hh_2/src/config/db/db_service.dart';
+import 'package:hh_2/src/config/log/log_service.dart';
 import 'package:hh_2/src/models/user_model.dart';
 
 
 class DBUser {
   final DBService _dbService;
 
-  DBUser(this._dbService);
+  DBUser(this._dbService){ LogService.init();}
 
   Future<bool> userExists(String login, String email) async {
     var sql = 'SELECT * FROM User WHERE user_login = ${HHVar.c} OR user_email = ${HHVar.c}';
@@ -51,16 +52,14 @@ class DBUser {
 
   Future<UserModel?> verifyUser(String login, String password) async {
     var sql = 'SELECT * FROM User WHERE user_login = ${HHVar.c} AND user_password = ${HHVar.c}';
-    print("DBUSER:   SQL: $sql");
-    print("DBUSER:   ${[login, password]}");
+    LogService.logInfo("DBUSER:   ${[login, password]}","USER");
+
     var result = await _dbService.query(sql, [login, password]);
 
-    print("RESULT DBUSER:");
-    print(result);
+    LogService.logInfo("RESULT: $result","USER");
 
     if (result.isNotEmpty) {
       var row = result.first;
-      print(row['user_id']);
       return UserModel(
         //userId: int.parse(row['user_id']),
         userId: row['user_id'] as int,

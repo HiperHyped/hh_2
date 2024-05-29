@@ -8,6 +8,7 @@ import 'package:hh_2/src/models/basket_model.dart';
 import 'package:hh_2/src/models/history_model.dart';
 import 'package:hh_2/src/models/user_model.dart';
 import 'package:hh_2/src/pages/dimension/dimension_page.dart';
+import 'package:hh_2/src/pages/photo/photo_dialog.dart';
 import 'package:hh_2/src/pages/summary/summary_page.dart';
 import 'package:hh_2/src/pages/user/edit_user.dart';
 import 'package:hh_2/src/pages/user/sign_up.dart';
@@ -48,10 +49,26 @@ class _TopBarState extends State<TopBar> {
           ),
           actions: [
             //const SizedBox(width:40),
+
+            ///////////////////SEARCH
             Container(
               padding: const EdgeInsets.all(4.0),
               width: 200,
               child: const HHTextSearch(icon: Icons.search, label: "Busca")
+            ),
+
+            IconButton(
+              icon: const Icon(
+                size: 30,
+                color: Colors.grey,
+                Icons.camera_alt_outlined
+                ),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) =>  PhotoDialog(),
+                );
+              },
             ),
 
             PopupMenuButton<int>(
@@ -183,6 +200,7 @@ class _TopBarState extends State<TopBar> {
                       HHGlobals.HHUserHistory.value = HistoryModel();
                       HHGlobals.HHSuggestionList.value.clear();
                       HHGlobals.HHGridList.value.clear();
+                      HHGlobals.HHPeriodicLists.value.clear();
                       Navigator.of(context).pushReplacement(
                       MaterialPageRoute(builder: (c) {return StartPage();})
                       );

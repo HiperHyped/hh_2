@@ -1,11 +1,23 @@
+import 'package:hh_2/src/config/common/var/hh_globals.dart';
+import 'package:hh_2/src/config/common/var/hh_notifiers.dart';
 import 'package:hh_2/src/config/db/db_service.dart';
+import 'package:hh_2/src/config/log/log_service.dart';
 import 'package:hh_2/src/models/recipe_model.dart';
 import 'package:hh_2/src/models/ean_model.dart';
 import 'package:hh_2/src/models/suggestion_model.dart';
 import 'package:hh_2/src/models/search_model.dart';
 
 class DBBook {
+  DBBook() {LogService.init();}
+
   final DBService _dbService = DBService();
+
+  void loadUserRecipes() async {
+    List<SuggestionModel> suggestions = await getSuggestionsByUserId(HHGlobals.HHUser.userId);
+    HHGlobals.HHUserBook.value = suggestions;
+    HHNotifiers.counter[CounterType.BookCount]!.value = suggestions.length;
+  }
+  
 
   Future<List> getSuggestedRecipesByUserId(int userId) async {
     String suggestSql = '''
@@ -76,7 +88,7 @@ class DBBook {
       }
 
       suggestions.add(suggestion);
-      print(suggestion.toString());
+      LogService.logInfo(suggestion.toString(), "SUGGESTION");
     }
 
     return suggestions;

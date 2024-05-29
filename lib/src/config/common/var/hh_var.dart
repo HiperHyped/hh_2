@@ -34,7 +34,8 @@ abstract class HHVar{
 
     // VARIAVEIS PARA SUGGESTION CARD:
     static double sugWidth = 100;
-    static double sugShrink = 25;
+    static double sugShrink = 30;
+    static double barHeight =100;
 
 
     static String c = "?";
@@ -46,5 +47,7 @@ abstract class HHVar{
     // LIMITE PARA GRID
     static int GridLimit = 450;
 
+    // XERXES OPERATIONS PERFORMING
+    static bool XOPerforming = false;
 
 }

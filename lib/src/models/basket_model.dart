@@ -13,7 +13,8 @@ enum SourceOrigin {
   R, //recipe
   H, //historic
   B, //book
-  C, //chart
+  P, //periodic
+  F, //foto (photo)
   // add more as necessary
 }
 
