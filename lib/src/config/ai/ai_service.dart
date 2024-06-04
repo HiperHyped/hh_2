@@ -7,6 +7,7 @@ class AIService {
     OpenAI.organization = "org-2YkkE6qieHaCmPXsYoFecOsw"; // Optional:
   }
 
+
   Future<List<OpenAIModelModel>> listModels() async {
     return await OpenAI.instance.model.list();
   }
@@ -121,6 +122,8 @@ class AIService {
         purpose: purpose,
       );
   }
+  
+  
 }
 
 /*
@@ -129,3 +132,5 @@ abstract class Env {
   @EnviedField(varName: 'OPEN_AI_API_KEY') // the .env variable.
   static const apiKey = _Env.apiKey;
 }*/
+
+

@@ -22,7 +22,7 @@ class LogService {
     'SETTINGS': false,
     'USER': false,
     'DB': true,
-    'AI': false
+    'AI': true
     // Defina outras categorias conforme necessário
   };
 
