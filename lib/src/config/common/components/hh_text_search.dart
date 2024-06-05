@@ -6,7 +6,7 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:hh_2/src/config/common/image/hh_url_image.dart';
 import 'package:hh_2/src/config/common/var/hh_globals.dart';
 import 'package:hh_2/src/config/common/var/hh_var.dart';
-import 'package:hh_2/src/config/db/db_grid.dart';
+//import 'package:hh_2/src/config/db/db_grid.dart';
 import 'package:hh_2/src/config/db/db_search.dart';
 import 'package:hh_2/src/models/ean_model.dart';
 import 'package:hh_2/src/models/search_model.dart';
@@ -45,7 +45,7 @@ class HHTextSearch extends StatefulWidget {
 class _HHTextSearchState extends State<HHTextSearch> {
   bool isObscure = false;
   final DBSearch _dbSearch = DBSearch();
-  final DBGrid _dbGrid = DBGrid();
+  //final DBGrid _dbGrid = DBGrid();
   List<EanModel> gridList = [];
   Timer? _debounce;
 

@@ -1,6 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:http/http.dart';
+//import 'package:http/http.dart';
 
 class DBService {
     //final String apiGatewayUrl = 'https://15a49x9kdi.execute-api.sa-east-1.amazonaws.com/default/DBHandler'; //LAMBDA - AMAZON RDS

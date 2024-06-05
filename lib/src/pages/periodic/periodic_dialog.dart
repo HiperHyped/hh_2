@@ -3,7 +3,7 @@ import 'package:hh_2/src/config/common/components/hh_button.dart';
 import 'package:hh_2/src/config/common/var/hh_colors.dart';
 import 'package:hh_2/src/config/common/var/hh_globals.dart';
 import 'package:hh_2/src/config/db/db_periodic.dart';
-import 'package:hh_2/src/config/db/db_service.dart';
+//import 'package:hh_2/src/config/db/db_service.dart';
 import 'package:hh_2/src/config/log/log_service.dart';
 import 'package:hh_2/src/models/ean_model.dart';
 import 'package:hh_2/src/models/periodic_model.dart';

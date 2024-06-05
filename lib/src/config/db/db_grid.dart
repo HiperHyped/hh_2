@@ -58,7 +58,7 @@ class DBGrid {
       INSERT INTO Term(user_id, basket_id, term_string, term_date, search_type)
       VALUES (${HHVar.c}, ${HHVar.c}, ${HHVar.c}, CONVERT_TZ(UTC_TIMESTAMP(), '+00:00', '-03:00'), ${HHVar.c})
     ''';
-    DateTime now = DateTime.now(); // Obter a data e hora atuais
+    //DateTime now = DateTime.now(); // Obter a data e hora atuais
     List<dynamic> arguments = [HHGlobals.HHUser.userId, HHGlobals.HHBasket.value.basket_id, term, searchType];
     await _dbService.query(sql, arguments);
   }

@@ -7,14 +7,16 @@ import 'package:http/http.dart' as http;
 class AIPhoto extends StatefulWidget {
   final File image;
 
-  AIPhoto({required this.image}) {LogService.init();}
+  AIPhoto({required this.image}) {
+    LogService.init();
+  }
 
   @override
   _AIPhotoState createState() => _AIPhotoState();
 }
 
 class _AIPhotoState extends State<AIPhoto> {
-  late Future<Map<String, dynamic>> _response;
+  late Future<List<dynamic>> _response;
 
   @override
   void initState() {
@@ -22,11 +24,9 @@ class _AIPhotoState extends State<AIPhoto> {
     _response = analyzeImage(widget.image);
   }
 
-  Future<Map<String, dynamic>> analyzeImage(File image) async {
+  Future<List<dynamic>> analyzeImage(File image) async {
     const apiKey = "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";
-    //const assistantId = 'asst_44H2MSuSxxEloH60cR2Xwd7i'; //PhotoProd_v1 com gpt-4o
-
-    const assistantId = "asst_9Qz6mjZbvu2pezAV4fuvjyYp"; //PhotoProd_v0 com gpt-4-turbo
+    const assistantId = "asst_9Qz6mjZbvu2pezAV4fuvjyYp";
     const organizationId = "org-2YkkE6qieHaCmPXsYoFecOsw";
 
     try {
@@ -39,8 +39,7 @@ class _AIPhotoState extends State<AIPhoto> {
       )
         ..headers['Authorization'] = 'Bearer $apiKey'
         ..headers['OpenAI-Organization'] = organizationId
-        ..headers['OpenAI-Beta'] = 'assistants=v1' // 'assistants=v2' // Para o caso de PhotoProd_v1 IDK
-        ..fields['purpose'] = 'assistants'
+        ..fields['purpose'] = 'answers'
         ..files.add(await http.MultipartFile.fromPath('file', image.path));
 
       var uploadResponse = await uploadRequest.send();
@@ -54,63 +53,98 @@ class _AIPhotoState extends State<AIPhoto> {
       var uploadedFile = json.decode(uploadResponseBody.body);
       print("Image uploaded successfully: $uploadedFile");
 
-      // Cria o prompt para o assistant
-      var messages = [
-        {
-          'role': 'system',
-          'content': ""  //"Você vai receber uma imagem e deve identificar os produtos nela."
-        },
-        {
-          'role': 'user',
-          'content': "",  //Analyze this image.",
-          'attachment': {'type': 'image', 'file': uploadedFile['id']}
-        }
-      ];
-
-      print("Sending request to assistant...");
-      print("Messages: $messages");
-
-      // Faz a chamada ao assistente
-      var assistantResponse = await _postWithRedirect(
-        'https://api.openai.com/v1/assistants/$assistantId/',
+      // Cria a thread com a mensagem inicial
+      var threadResponse = await http.post(
+        Uri.parse('https://api.openai.com/v1/assistants/$assistantId/threads'),
         headers: {
           'Authorization': 'Bearer $apiKey',
           'OpenAI-Organization': organizationId,
-          'OpenAI-Beta': "assistants=v1", // 'assistants=v2' // Para o caso de PhotoProd_v1 IDK
           'Content-Type': 'application/json'
         },
-        body: json.encode({'messages': messages}),
+        body: json.encode({
+          'messages': [
+            {'role': 'user', 'content': 'Analyze this image.'}
+          ],
+          'files': [uploadedFile['id']]
+        }),
       );
 
-      if (assistantResponse.statusCode != 200) {
-        print("Failed to analyze image: ${assistantResponse.body}");
-        throw Exception('Failed to analyze image: ${assistantResponse.body}');
+      if (threadResponse.statusCode != 201) {
+        print("Failed to create thread: ${threadResponse.body}");
+        throw Exception('Failed to create thread: ${threadResponse.body}');
       }
 
-      var responseData = json.decode(assistantResponse.body);
-      print("Assistant response: $responseData");
+      var threadData = json.decode(threadResponse.body);
+      var threadId = threadData['id'];
+      print("Thread created successfully: $threadData");
 
-      return responseData;
+      // Cria a execução
+      var runResponse = await http.post(
+        Uri.parse('https://api.openai.com/v1/assistants/$assistantId/threads/$threadId/runs'),
+        headers: {
+          'Authorization': 'Bearer $apiKey',
+          'OpenAI-Organization': organizationId,
+          'Content-Type': 'application/json'
+        },
+        body: json.encode({}),
+      );
+
+      if (runResponse.statusCode != 201) {
+        print("Failed to create run: ${runResponse.body}");
+        throw Exception('Failed to create run: ${runResponse.body}');
+      }
+
+      var runData = json.decode(runResponse.body);
+      var runId = runData['id'];
+      print("Run created successfully: $runData");
+
+      // Polling até a execução ser concluída
+      var runStatus = runData['status'];
+      while (runStatus != 'completed' && runStatus != 'failed') {
+        await Future.delayed(const Duration(seconds: 5)); // Aguarda 5 segundos antes de checar novamente
+
+        var runStatusResponse = await http.get(
+          Uri.parse('https://api.openai.com/v1/assistants/$assistantId/threads/$threadId/runs/$runId'),
+          headers: {
+            'Authorization': 'Bearer $apiKey',
+            'OpenAI-Organization': organizationId,
+          },
+        );
+
+        if (runStatusResponse.statusCode != 200) {
+          print("Failed to retrieve run status: ${runStatusResponse.body}");
+          throw Exception('Failed to retrieve run status: ${runStatusResponse.body}');
+        }
+
+        runData = json.decode(runStatusResponse.body);
+        runStatus = runData['status'];
+      }
+
+      if (runStatus != 'completed') {
+        throw Exception('Run did not complete successfully: $runStatus');
+      }
+
+      // Obtém as mensagens da thread após a execução
+      var messagesResponse = await http.get(
+        Uri.parse('https://api.openai.com/v1/assistants/$assistantId/threads/$threadId/messages'),
+        headers: {
+          'Authorization': 'Bearer $apiKey',
+          'OpenAI-Organization': organizationId,
+        },
+      );
+
+      if (messagesResponse.statusCode != 200) {
+        print("Failed to retrieve messages: ${messagesResponse.body}");
+        throw Exception('Failed to retrieve messages: ${messagesResponse.body}');
+      }
+
+      var messagesData = json.decode(messagesResponse.body);
+      print("Assistant response: ${messagesData['messages']}");
+      return messagesData['messages'];
     } catch (e) {
       print("Error in analyzeImage: $e");
       throw Exception("Error in analyzeImage: $e");
     }
-  }
-
-  Future<http.Response> _postWithRedirect(String url, {Map<String, String>? headers, dynamic body}) async {
-    var response = await http.post(Uri.parse(url), headers: headers, body: body);
-
-    if (response.statusCode == 307) {
-      var redirectUrl = response.headers['location'];
-      if (redirectUrl != null) {
-        print("Redirecting to $redirectUrl");
-        response = await http.post(Uri.parse(redirectUrl), headers: headers, body: body);
-      } else {
-        throw Exception('Redirect without Location header');
-      }
-    }
-
-    return response;
   }
 
   @override
@@ -125,24 +159,26 @@ class _AIPhotoState extends State<AIPhoto> {
             child: Image.file(widget.image),
           ),
           Expanded(
-            child: FutureBuilder<Map<String, dynamic>>(
+            child: FutureBuilder<List<dynamic>>(
               future: _response,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
                   return Center(child: Text('Erro: ${snapshot.error}'));
-                } else {
-                  final data = snapshot.data!;
+                } else if (snapshot.hasData) {
+                  final messages = snapshot.data!;
                   return ListView.builder(
-                    itemCount: data['choices'].length,
+                    itemCount: messages.length,
                     itemBuilder: (context, index) {
-                      final product = data['choices'][index]['text'];
+                      final message = messages[index]['content'];
                       return ListTile(
-                        title: Text(product),
+                        title: Text(message),
                       );
                     },
                   );
+                } else {
+                  return Center(child: Text('Nenhuma mensagem encontrada.'));
                 }
               },
             ),

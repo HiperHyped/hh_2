@@ -1,7 +1,7 @@
-import 'package:http/http.dart' as http;
+/*import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-/*
+
 ///NOT USED
 class APIAIService {
   final String _apiUrl = 'https://api.openai.com/v1/engines/gpt-3.5-turbo/completions';

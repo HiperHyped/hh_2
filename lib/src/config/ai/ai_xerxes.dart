@@ -1,14 +1,15 @@
 
 // ignore_for_file: avoid_print
 
-import 'package:dart_openai/openai.dart';
+import 'package:dart_openai/dart_openai.dart';
+//import 'package:dart_openai/openai.dart';
 import 'package:hh_2/src/config/ai/ai_service.dart';
 import 'package:hh_2/src/config/common/var/hh_globals.dart';
 import 'package:hh_2/src/config/log/log_service.dart';
 import 'package:hh_2/src/models/basket_model.dart';
 import 'package:hh_2/src/models/ean_model.dart';
 import 'package:hh_2/src/models/recipe_model.dart';
-import 'package:hh_2/src/models/search_model.dart';
+//import 'package:hh_2/src/models/search_model.dart';
 import 'package:hh_2/src/models/suggestion_model.dart';
 
 
@@ -153,9 +154,9 @@ class Xerxes {
     SuggestionModel suggestion = SuggestionModel();
     //suggestion.initialProductList = List.from(HHGlobals.HHBasket.value.products);
     
-    for (EanModel product in HHGlobals.HHBasket.value.products) {
+    /*for (EanModel product in HHGlobals.HHBasket.value.products) {
       //print("EANINFO: ${product.nome} :: ${HHGlobals.HHBasket.value.productInfo[product]!.hintStatus}");
-    }
+    }*/
     
     // Filtrar a lista de produtos iniciais (initialProductList) com HintStatus "I"
     suggestion.initialProductList = HHGlobals.HHBasket.value.products.where((product) {
@@ -175,14 +176,14 @@ class Xerxes {
     // Regex para extrair a sugestão e a lista da resposta
     final suggestionPattern = RegExp(r'Sugestão: {(.*?)}');
     final listPattern = RegExp(r'Lista: {(.*?)}');
-    final unusedPattern = RegExp(r'Inutilizado: {(.*?)}');
+    //final unusedPattern = RegExp(r'Inutilizado: {(.*?)}');
     
     //print("SUGPAT: $suggestionPattern, LISTPAT: $listPattern");
 
     // Encontrar e capturar os grupos de sugestão e lista
     final suggestionMatch = suggestionPattern.firstMatch(response);
     final listMatch = listPattern.firstMatch(response);
-    final unusedMatch = unusedPattern.firstMatch(response);
+    // final unusedMatch = unusedPattern.firstMatch(response);
 
     //print("SUG: $suggestionMatch, LIST: $listMatch");
 

@@ -8,7 +8,7 @@ import 'package:hh_2/src/models/basket_model.dart';
 import 'package:hh_2/src/models/ean_model.dart';
 import 'package:hh_2/src/models/history_model.dart';
 import 'package:hh_2/src/models/search_model.dart';
-import 'package:hh_2/src/models/user_model.dart';
+//import 'package:hh_2/src/models/user_model.dart';
 
 class DBHistory {
 

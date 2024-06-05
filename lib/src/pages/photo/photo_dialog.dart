@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:hh_2/src/config/ai/ai_photo.dart';
+//import 'package:hh_2/src/config/ai/ai_photo_old.dart';
 import 'package:hh_2/src/config/common/components/hh_button.dart';
 import 'package:hh_2/src/config/common/var/hh_colors.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image/image.dart' as img;
-import 'package:path_provider/path_provider.dart';
+//import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 
 class PhotoDialog extends StatefulWidget {

@@ -53,7 +53,7 @@ class PayByPixTab extends StatelessWidget {
                   style: TextStyle(fontSize: 16),
                 ),
                 SizedBox(height: 16),
-                QrImage(
+                QrImageView(
                   data: pixCode,
                   version: QrVersions.auto,
                   //size: MediaQuery.of(context).size.width * 0.6,
@@ -63,7 +63,7 @@ class PayByPixTab extends StatelessWidget {
                 // Botão de confirmar pagamento
                 HHButton(
                   onPressed: () {},
-                  label:'Pagar',
+                  label: 'Pagar',
                 ),
               ],
             ),

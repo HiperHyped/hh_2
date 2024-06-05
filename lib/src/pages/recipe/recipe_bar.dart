@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hh_2/src/config/common/var/hh_colors.dart';
 import 'package:hh_2/src/config/common/var/hh_globals.dart';
-import 'package:hh_2/src/models/recipe_model.dart';
+//import 'package:hh_2/src/models/recipe_model.dart';
 import 'package:hh_2/src/models/suggestion_model.dart';
 import 'package:hh_2/src/pages/recipe/recipe_card.dart';
 

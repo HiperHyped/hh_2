@@ -7,7 +7,7 @@ import 'package:hh_2/src/config/common/var/hh_var.dart';
 import 'package:hh_2/src/models/basket_model.dart';
 import 'package:hh_2/src/models/periodic_model.dart';
 import 'package:hh_2/src/models/ean_model.dart';
-import 'package:hh_2/src/pages/basket/basket_tile.dart';
+//import 'package:hh_2/src/pages/basket/basket_tile.dart';
 import 'package:hh_2/src/pages/periodic/periodic_tile.dart';
 
 class PeriodicCard extends StatefulWidget {

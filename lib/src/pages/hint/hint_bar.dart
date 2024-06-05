@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:hh_2/src/config/common/var/hh_colors.dart';
 import 'package:hh_2/src/config/common/var/hh_globals.dart';
 import 'package:hh_2/src/config/common/var/hh_var.dart';
-import 'package:hh_2/src/models/ean_model.dart';
+//import 'package:hh_2/src/models/ean_model.dart';
 import 'package:hh_2/src/models/suggestion_model.dart';
 import 'package:hh_2/src/pages/hint/hint_card.dart';
-import 'package:hh_2/src/pages/suggestion/suggestion_card.dart';
+//import 'package:hh_2/src/pages/suggestion/suggestion_card.dart';
 
 
 

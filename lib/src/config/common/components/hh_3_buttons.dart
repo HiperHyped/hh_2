@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hh_2/src/config/common/var/hh_globals.dart';
 import 'package:hh_2/src/models/basket_model.dart';
 import 'package:hh_2/src/models/ean_model.dart';
-import 'package:hh_2/src/pages/grid/components/prod_card.dart';
+//import 'package:hh_2/src/pages/grid/components/prod_card.dart';
 
 class HH3Buttons extends StatelessWidget {
   final EanModel product;

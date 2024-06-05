@@ -3,9 +3,7 @@ import 'package:hh_2/src/config/common/var/hh_colors.dart';
 import 'package:hh_2/src/config/db/db_service.dart';
 import 'package:hh_2/src/pages/start/start_screen.dart';
 import 'package:provider/provider.dart';
-import 'package:logging/logging.dart';
 
-import 'src/config/log/log_service.dart';
 
 // Amplify Flutter Packages
 //import 'package:amplify_flutter/amplify_flutter.dart';

@@ -1,8 +1,8 @@
 import 'package:hh_2/src/config/common/var/hh_var.dart';
 import 'package:hh_2/src/config/db/db_service.dart';
 import 'package:hh_2/src/models/suggestion_model.dart';
-import 'package:hh_2/src/models/recipe_model.dart';
-import 'package:mysql1/src/single_connection.dart';
+//import 'package:hh_2/src/models/recipe_model.dart';
+//import 'package:mysql1/src/single_connection.dart';
 
 class DBHint {
   final DBService _dbService = DBService();

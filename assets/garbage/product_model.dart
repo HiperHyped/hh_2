@@ -1,6 +1,6 @@
-import 'package:hh_2/src/config/common/var/hh_globals.dart';
+/*import 'package:hh_2/src/config/common/var/hh_globals.dart';
 import 'package:hh_2/src/models/ean_model.dart';
-import 'package:hh_2/src/models/price_model.dart';
+import 'package:hh_2/src/models/price_model.dart';*/
 
 /*
 class ProductModel {

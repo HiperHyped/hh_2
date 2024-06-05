@@ -1,9 +1,9 @@
-import 'package:auto_size_text/auto_size_text.dart';
+//import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:hh_2/src/config/common/components/hh_3_buttons.dart';
+//import 'package:hh_2/src/config/common/components/hh_3_buttons.dart';
 import 'package:hh_2/src/config/common/components/hh_4_buttons.dart';
 import 'package:hh_2/src/config/common/var/hh_colors.dart';
-import 'package:hh_2/src/config/common/var/hh_globals.dart';
+//import 'package:hh_2/src/config/common/var/hh_globals.dart';
 import 'package:hh_2/src/models/basket_model.dart';
 import 'package:hh_2/src/models/ean_model.dart';
 import 'package:hh_2/src/services/utils.dart';

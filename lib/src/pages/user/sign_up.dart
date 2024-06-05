@@ -5,14 +5,15 @@ import 'package:hh_2/src/config/common/components/hh_text_field.dart';
 import 'package:hh_2/src/config/common/components/hh_uf_drop_down.dart';
 import 'package:hh_2/src/config/common/var/hh_colors.dart';
 import 'package:hh_2/src/config/common/var/hh_globals.dart';
-import 'package:hh_2/src/config/common/var/hh_var.dart';
+//import 'package:hh_2/src/config/common/var/hh_var.dart';
 import 'package:hh_2/src/config/db/db_basket.dart';
+import 'package:hh_2/src/config/db/db_service.dart';
 import 'package:hh_2/src/config/db/db_user.dart';
 import 'package:hh_2/src/models/basket_model.dart';
 import 'package:hh_2/src/models/user_model.dart';
 import 'package:hh_2/src/pages/base/base_screen.dart';
-import 'package:provider/provider.dart';
-import '../../config/db/db_service.dart';
+//import 'package:provider/provider.dart';
+
 
 class SignUp extends StatefulWidget {
   final String? login;

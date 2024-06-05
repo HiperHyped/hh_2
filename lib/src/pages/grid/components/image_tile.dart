@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hh_2/src/config/common/var/hh_colors.dart';
 import 'package:hh_2/src/config/common/var/hh_globals.dart';
-import 'package:hh_2/src/config/common/image/hh_asset_image.dart';
+//import 'package:hh_2/src/config/common/image/hh_asset_image.dart';
 import 'package:hh_2/src/config/common/components/hh_price_tag.dart';
 import 'package:hh_2/src/models/basket_model.dart';
 import 'package:hh_2/src/models/ean_model.dart';

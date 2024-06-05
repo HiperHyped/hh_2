@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
 import 'package:hh_2/src/config/common/var/hh_colors.dart';
 import 'package:hh_2/src/config/common/var/hh_globals.dart';
 import 'package:hh_2/src/config/common/image/hh_url_cat_image.dart';
 import 'category_model.dart';
 import 'package:hh_2/src/services/utils.dart';
-import 'package:auto_size_text/auto_size_text.dart';
+import 'package:auto_size_text/auto_size_text.dart';*/
 
 /*
 class CatTile extends StatelessWidget {

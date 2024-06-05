@@ -1,4 +1,4 @@
-import 'dart:developer';
+/*import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +6,7 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:hh_2/src/config/common/var/hh_colors.dart';
 //import 'package:hh_2/src/models/category_model.dart';
-import 'package:hh_2/src/config/xml/xml_data.dart';
+import 'package:hh_2/src/config/xml/xml_data.dart';*/
 
 /*
 class CatTab extends StatefulWidget {

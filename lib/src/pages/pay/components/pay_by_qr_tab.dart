@@ -50,7 +50,7 @@ class PayByQRTab extends StatelessWidget {
                   style: TextStyle(fontSize: 16),
                 ),
                 SizedBox(height: 16),
-                QrImage(
+                QrImageView(
                   data: 'https://www.example.com/payment?amount=$totalPrice',
                   version: QrVersions.auto,
                   //size: MediaQuery.of(context).size.width * 0.6,
@@ -60,7 +60,7 @@ class PayByQRTab extends StatelessWidget {
                 // Botão de confirmar pagamento
                 HHButton(
                   onPressed: () {},
-                  label:'Pagar',
+                  label: 'Pagar',
                 ),
               ],
             ),

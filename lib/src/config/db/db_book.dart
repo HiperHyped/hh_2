@@ -2,8 +2,8 @@ import 'package:hh_2/src/config/common/var/hh_globals.dart';
 import 'package:hh_2/src/config/common/var/hh_notifiers.dart';
 import 'package:hh_2/src/config/db/db_service.dart';
 import 'package:hh_2/src/config/log/log_service.dart';
-import 'package:hh_2/src/models/recipe_model.dart';
-import 'package:hh_2/src/models/ean_model.dart';
+//import 'package:hh_2/src/models/recipe_model.dart';
+//import 'package:hh_2/src/models/ean_model.dart';
 import 'package:hh_2/src/models/suggestion_model.dart';
 import 'package:hh_2/src/models/search_model.dart';
 

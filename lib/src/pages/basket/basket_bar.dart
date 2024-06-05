@@ -1,14 +1,14 @@
-import 'dart:ui';
+//import 'dart:ui';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:hh_2/src/config/ai/ai_xerxes.dart';
+//import 'package:hh_2/src/config/ai/ai_xerxes.dart';
 import 'package:hh_2/src/config/common/var/hh_colors.dart';
 import 'package:hh_2/src/config/common/var/hh_globals.dart';
 import 'package:hh_2/src/models/basket_model.dart';
 import 'package:hh_2/src/models/ean_model.dart';
-import 'package:hh_2/src/models/suggestion_model.dart';
+//import 'package:hh_2/src/models/suggestion_model.dart';
 import 'package:hh_2/src/pages/basket/basket_tile.dart';
-import 'package:hh_2/src/services/utils.dart';
+//import 'package:hh_2/src/services/utils.dart';
 
 
 class BasketBar extends StatefulWidget {

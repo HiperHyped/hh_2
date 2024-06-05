@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+/*import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
@@ -9,7 +9,7 @@ import 'package:hh_2/src/config/xml/xml_data.dart';
 import 'package:hh_2/src/config/xml/xml_s3_data.dart';
 import 'category_model.dart';
 import 'package:hh_2/src/models/ean_model.dart';
-import 'cat_tile.dart';
+import 'cat_tile.dart';*/
 
 //DEPRECATED
 //ChatGPT

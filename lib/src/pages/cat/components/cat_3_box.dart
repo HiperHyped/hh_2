@@ -1,4 +1,4 @@
-import 'package:auto_size_text/auto_size_text.dart';
+//import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:hh_2/src/config/common/var/hh_colors.dart';
 import 'package:hh_2/src/config/common/var/hh_globals.dart';

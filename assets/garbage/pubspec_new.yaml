@@ -41,7 +41,7 @@ dependencies:
 
   flutter:
     sdk: flutter
-  http: ^0.13.6 # ^1.2.1
+  http: ^1.2.1
 
   xml: ^6.5.0
 
@@ -69,13 +69,13 @@ dependencies:
 
   flutter_masked_text2: ^0.9.1
 
-  flutter_typeahead: ^4.6.1 #^5.2.0
+  flutter_typeahead: ^5.2.0
 
   flutter_image: ^4.1.11
   
   cached_network_image: ^3.3.1
 
-  dart_openai: ^1.9.92 #^5.1.0
+  dart_openai: ^5.1.0
 
   #chat_gpt_sdk: ^3.0.8
   chat_gpt_sdk: ^3.0.8

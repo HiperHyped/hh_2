@@ -10,7 +10,7 @@ import 'package:hh_2/src/models/ean_model.dart';
 import 'package:hh_2/src/models/suggestion_model.dart';
 import 'package:hh_2/src/pages/book/components/book_tile.dart';
 import 'package:hh_2/src/pages/hint/components/recipe_dialog.dart';
-import 'package:hh_2/src/pages/suggestion/suggestion_tile.dart';
+//import 'package:hh_2/src/pages/suggestion/suggestion_tile.dart';
 
 
 //v1

@@ -4,11 +4,11 @@ import 'package:hh_2/src/config/common/components/hh_text_field.dart';
 import 'package:hh_2/src/config/common/var/hh_colors.dart';
 import 'package:hh_2/src/config/common/var/hh_dimensions.dart';
 import 'package:hh_2/src/config/common/var/hh_notifiers.dart';
-import 'package:hh_2/src/config/common/var/hh_settings.dart';
-import 'package:hh_2/src/config/common/var/hh_summary.dart';
+//import 'package:hh_2/src/config/common/var/hh_settings.dart';
+//import 'package:hh_2/src/config/common/var/hh_summary.dart';
 import 'package:hh_2/src/config/db/db_basket.dart';
 import 'package:hh_2/src/config/db/db_dimensions.dart';
-import 'package:hh_2/src/config/db/db_periodic.dart';
+//import 'package:hh_2/src/config/db/db_periodic.dart';
 import 'package:hh_2/src/config/db/db_service.dart';
 import 'package:hh_2/src/config/db/db_settings.dart';
 import 'package:hh_2/src/config/db/db_summary.dart';
@@ -16,12 +16,12 @@ import 'package:hh_2/src/config/db/db_user.dart';
 import 'package:hh_2/src/config/log/log_service.dart';
 import 'package:hh_2/src/config/xml/xml_s3_data.dart';
 import 'package:hh_2/src/models/basket_model.dart';
-import 'package:hh_2/src/models/cat_model.dart';
+//import 'package:hh_2/src/models/cat_model.dart';
 import 'package:hh_2/src/models/user_model.dart';
 import 'package:hh_2/src/pages/base/base_screen.dart';
 import 'package:hh_2/src/config/common/var/hh_globals.dart';
 import 'package:hh_2/src/pages/user/sign_up.dart';
-import 'package:logging/logging.dart';
+//import 'package:logging/logging.dart';
 
 // INICIO STARTPAGE
 class StartPage extends StatefulWidget {

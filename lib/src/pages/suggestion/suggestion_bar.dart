@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hh_2/src/config/common/var/hh_colors.dart';
 import 'package:hh_2/src/config/common/var/hh_globals.dart';
-import 'package:hh_2/src/models/ean_model.dart';
+//import 'package:hh_2/src/models/ean_model.dart';
 import 'package:hh_2/src/models/suggestion_model.dart';
 import 'package:hh_2/src/pages/suggestion/suggestion_card.dart';
 
-import 'suggestion_tile.dart';
+//import 'suggestion_tile.dart';
 
 
 class SuggestionBar extends StatefulWidget {

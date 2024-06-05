@@ -1,11 +1,11 @@
-import 'package:flutter/gestures.dart';
+//import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:hh_2/src/config/common/var/hh_address.dart';
+//import 'package:hh_2/src/config/common/var/hh_address.dart';
 import 'package:hh_2/src/config/common/var/hh_colors.dart';
 import 'package:hh_2/src/config/common/var/hh_globals.dart';
 import 'package:hh_2/src/config/db/db_grid.dart';
-import 'package:hh_2/src/config/xml/xml_s3_data.dart';
-import 'package:hh_2/src/models/cat_model.dart';
+//import 'package:hh_2/src/config/xml/xml_s3_data.dart';
+//import 'package:hh_2/src/models/cat_model.dart';
 import 'package:hh_2/src/models/ean_model.dart';
 import 'package:hh_2/src/models/search_model.dart';
 import 'package:hh_2/src/pages/cat/components/cat_3_tile.dart';

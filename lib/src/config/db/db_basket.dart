@@ -1,10 +1,10 @@
-import 'package:hh_2/src/config/common/var/hh_globals.dart';
+//import 'package:hh_2/src/config/common/var/hh_globals.dart';
 import 'package:hh_2/src/config/common/var/hh_var.dart';
 import 'package:hh_2/src/config/db/db_service.dart';
 import 'package:hh_2/src/config/log/log_service.dart';
 import 'package:hh_2/src/models/basket_model.dart';
 import 'package:hh_2/src/models/ean_model.dart';
-import 'package:hh_2/src/models/user_model.dart';
+//import 'package:hh_2/src/models/user_model.dart';
 
 class DBBasket {
   final DBService _dbService;

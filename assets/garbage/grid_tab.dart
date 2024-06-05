@@ -1,4 +1,4 @@
-import 'package:flutter/gestures.dart';
+/*import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:hh_2/src/config/common/var/hh_globals.dart';
 import 'package:hh_2/src/config/common/var/hh_var.dart';
@@ -9,7 +9,7 @@ import 'package:hh_2/src/models/ean_model.dart';
 import 'package:hh_2/src/models/user_model.dart';
 import 'package:hh_2/src/pages/grid/components/image_tile.dart';
 // ignore: import_of_legacy_library_into_null_safe
-import 'package:matrix_gesture_detector/matrix_gesture_detector.dart';
+import 'package:matrix_gesture_detector/matrix_gesture_detector.dart';*/
 
 
 // INICIO GRIDTAB
