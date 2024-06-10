@@ -8,6 +8,7 @@ import 'package:hh_2/src/models/basket_model.dart';
 import 'package:hh_2/src/models/history_model.dart';
 import 'package:hh_2/src/models/user_model.dart';
 import 'package:hh_2/src/pages/dimension/dimension_page.dart';
+import 'package:hh_2/src/pages/photo/image_dialog.dart';
 import 'package:hh_2/src/pages/photo/photo_dialog.dart';
 import 'package:hh_2/src/pages/summary/summary_page.dart';
 import 'package:hh_2/src/pages/user/edit_user.dart';
@@ -53,11 +54,29 @@ class _TopBarState extends State<TopBar> {
             ///////////////////SEARCH
             Container(
               padding: const EdgeInsets.all(4.0),
-              width: 200,
+              width: 180,
               child: const HHTextSearch(icon: Icons.search, label: "Busca")
             ),
 
+            // Upload de Imagem
             IconButton(
+              padding: EdgeInsets.all(4.0),
+              icon: const Icon(
+                Icons.image_outlined,
+                size: 30,
+                color: Colors.grey,
+              ),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) => ImageDialog(),
+                );
+              },
+            ),
+
+            // Photo 
+            IconButton(
+              padding: EdgeInsets.all(4.0),
               icon: const Icon(
                 size: 30,
                 color: Colors.grey,

@@ -12,7 +12,7 @@ class HHButton extends StatelessWidget {
     Key? key,
     required this.label,
     this.fontSize =20,
-    this.padding = 12.0,
+    this.padding = 8.0,
     this.invert=false,
     required this.onPressed,
   }) : super(key: key);

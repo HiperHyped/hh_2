@@ -1,15 +1,5 @@
-plugins {
-    id 'com.android.application' version '7.1.2' apply false
-    id 'com.android.library' version '7.1.2' apply false
-    id 'org.jetbrains.kotlin.android' version '1.8.21' apply false
-}
-
-tasks.register("clean", Delete) {
-    delete rootProject.buildDir
-}
-
-subprojects {
-    project.buildDir = "${rootProject.buildDir}/${project.name}"
+ext {
+    kotlin_version = '1.8.21'
 }
 
 allprojects {
@@ -17,4 +7,16 @@ allprojects {
         google()
         mavenCentral()
     }
+}
+
+rootProject.buildDir = '../build'
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+subprojects {
+    project.evaluationDependsOn(':app')
+}
+
+tasks.register("clean", Delete) {
+    delete rootProject.buildDir
 }

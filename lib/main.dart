@@ -42,6 +42,9 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         primarySwatch: HHColors.hhColorFirstSwatch,
         scaffoldBackgroundColor: Colors.white.withAlpha(190),
+        appBarTheme: AppBarTheme(
+          backgroundColor: HHColors.hhColorFirstSwatch, // Altere para a cor desejada
+        ),
       ),
       debugShowCheckedModeBanner: false,
       home: const StartPage(),

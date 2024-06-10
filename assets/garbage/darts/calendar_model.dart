@@ -1,4 +1,4 @@
-import '../../lib/src/models/ean_model.dart';  // Supondo que EanModel é a classe que representa produtos
+/*import '../../../lib/src/models/ean_model.dart';  // Supondo que EanModel é a classe que representa produtos
 
 class CalendarModel {
   int id;
@@ -59,3 +59,4 @@ class CalendarListModel {
     return 'CalendarListModel{calendars: $calendars}';
   }
 }
+*/

@@ -70,6 +70,12 @@ class _HHTextFieldState extends State<HHTextField> {
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(18),
           ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(18),
+            borderSide: BorderSide(color: HHColors.hhColorDarkFirst),
+          ),
+          labelStyle: TextStyle(color: Colors.grey), // Adicione esta linha para a cor padrão
+
         ),
       ),
     );

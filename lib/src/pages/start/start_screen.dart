@@ -4,11 +4,8 @@ import 'package:hh_2/src/config/common/components/hh_text_field.dart';
 import 'package:hh_2/src/config/common/var/hh_colors.dart';
 import 'package:hh_2/src/config/common/var/hh_dimensions.dart';
 import 'package:hh_2/src/config/common/var/hh_notifiers.dart';
-//import 'package:hh_2/src/config/common/var/hh_settings.dart';
-//import 'package:hh_2/src/config/common/var/hh_summary.dart';
 import 'package:hh_2/src/config/db/db_basket.dart';
 import 'package:hh_2/src/config/db/db_dimensions.dart';
-//import 'package:hh_2/src/config/db/db_periodic.dart';
 import 'package:hh_2/src/config/db/db_service.dart';
 import 'package:hh_2/src/config/db/db_settings.dart';
 import 'package:hh_2/src/config/db/db_summary.dart';
@@ -35,7 +32,7 @@ class _StartPageState extends State<StartPage> {
   
 
   // Adicione um ValueNotifier para controlar o status de carregamento.
-  ValueNotifier<bool> _isLoading = ValueNotifier<bool>(false);
+  //ValueNotifier<bool> _isLoading = ValueNotifier<bool>(false);
 
   Future<void> _handleLogin() async {
       String login = _loginController.text;

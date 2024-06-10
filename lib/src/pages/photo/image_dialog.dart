@@ -1,30 +1,55 @@
 import 'package:flutter/material.dart';
 import 'package:hh_2/src/config/ai/ai_photo.dart';
-//import 'package:hh_2/src/config/ai/ai_photo_old.dart';
 import 'package:hh_2/src/config/common/components/hh_button.dart';
 import 'package:hh_2/src/config/common/var/hh_colors.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image/image.dart' as img;
-//import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 
-class PhotoDialog extends StatefulWidget {
+class ImageDialog extends StatefulWidget {
   @override
-  _PhotoDialogState createState() => _PhotoDialogState();
+  _ImageDialogState createState() => _ImageDialogState();
 }
 
-class _PhotoDialogState extends State<PhotoDialog> {
+class _ImageDialogState extends State<ImageDialog> {
   File? _image;
   final picker = ImagePicker();
 
   Future<void> _getImage() async {
-    // Solicitar permissões
-    final status = await Permission.camera.request();
+    // Solicitar permissões de armazenamento
+    PermissionStatus storageStatus = await Permission.storage.status;
+    if (storageStatus.isDenied || storageStatus.isRestricted || storageStatus.isPermanentlyDenied) {
+      storageStatus = await Permission.storage.request();
+      if (storageStatus.isPermanentlyDenied) {
+        bool opened = await openAppSettings();
+        if (!opened) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Por favor, conceda a permissão de armazenamento nas configurações do aplicativo.')),
+          );
+        }
+        return;
+      }
+    }
 
-    if (status.isGranted) {
-      final pickedFile = await picker.pickImage(source: ImageSource.camera);
+    // Solicitar permissão de fotos
+    PermissionStatus photosStatus = await Permission.photos.status;
+    if (photosStatus.isDenied || photosStatus.isRestricted || photosStatus.isPermanentlyDenied) {
+      photosStatus = await Permission.photos.request();
+      if (photosStatus.isPermanentlyDenied) {
+        bool opened = await openAppSettings();
+        if (!opened) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Por favor, conceda a permissão de fotos nas configurações do aplicativo.')),
+          );
+        }
+        return;
+      }
+    }
+
+    if (photosStatus.isGranted) {
+      final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
       setState(() {
         if (pickedFile != null) {
@@ -32,24 +57,19 @@ class _PhotoDialogState extends State<PhotoDialog> {
         }
       });
     } else {
-      // Se a permissão não for concedida, você pode mostrar uma mensagem ou realizar outra ação
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Permissão de câmera negada')),
+        SnackBar(content: Text('Permissão de galeria negada')),
       );
     }
   }
 
   File _resizeAndFixOrientation(File imageFile) {
-    // Redimensionar a imagem
     final image = img.decodeImage(imageFile.readAsBytesSync());
     final resizedImage = img.copyResize(image!, width: 600);
-
-    // Corrigir orientação
     final correctedImage = img.bakeOrientation(resizedImage);
-
     final dir = Directory.systemTemp;
     final targetPath = path.join(dir.path, '${path.basename(imageFile.path)}_resized.jpg');
-    final resizedImageFile = File(targetPath)..writeAsBytesSync(img.encodeJpg(correctedImage, quality: 95));
+    final resizedImageFile = File(targetPath)..writeAsBytesSync(img.encodeJpg(correctedImage, quality: 85));
 
     return resizedImageFile;
   }
@@ -57,7 +77,9 @@ class _PhotoDialogState extends State<PhotoDialog> {
   @override
   void initState() {
     super.initState();
-    _getImage(); // Automatically opens the camera when the dialog is shown
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _getImage();
+    });
   }
 
   @override
@@ -94,10 +116,9 @@ class _PhotoDialogState extends State<PhotoDialog> {
                   HHButton(
                     label: 'Repetir',
                     onPressed: () {
-                      _getImage(); // Voltar à câmera para tirar outra foto
+                      _getImage();
                     },
                   ),
-                  //Container(width: 10),
                   HHButton(
                     label: 'Aceitar',
                     onPressed: () {
@@ -107,7 +128,7 @@ class _PhotoDialogState extends State<PhotoDialog> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => AIPhoto(image: resizedImage), // Certifique-se de que AIPhoto está corretamente importado e definido
+                            builder: (context) => AIPhoto(image: resizedImage),
                           ),
                         );
                       }

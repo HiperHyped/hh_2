@@ -9,7 +9,8 @@ class LogService {
     'SUGGESTION': Logger('SUGGESTION'),
     'SETTINGS': Logger('SETTINGS'),
     'DB': Logger('DB'),
-    'AI': Logger('AI')
+    'AI': Logger('AI'),
+    'PHOTO': Logger('PHOTO'),
     // Adicione outras categorias conforme necessário
   };
 
@@ -22,7 +23,8 @@ class LogService {
     'SETTINGS': false,
     'USER': false,
     'DB': true,
-    'AI': true
+    'AI': true,
+    'PHOTO': true
     // Defina outras categorias conforme necessário
   };
 
