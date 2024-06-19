@@ -389,6 +389,61 @@ Future<List<EanModel>> searchProductV2(SearchModel searchProduct, int inputLimit
 
 
 
+
+  Future<void> insertTerm(String term, String search_type) async {
+    var sql = '''
+      INSERT INTO Term(user_id, basket_id, term_string, term_date, search_type)
+      VALUES (${HHVar.c}, ${HHVar.c}, ${HHVar.c}, CONVERT_TZ(UTC_TIMESTAMP(), '+00:00', '-03:00'), ${HHVar.c})
+    ''';
+    //DateTime now = DateTime.now(); // Obter a data e hora atuais
+    List<dynamic> arguments = [HHGlobals.HHUser.userId, HHGlobals.HHBasket.value.basket_id, term, search_type];
+    await _dbService.query(sql, arguments);
+  }
+
+
+  Future<List<EanModel>> searchProductWithScore(SearchModel searchModel, int limit) async {
+    final List<dynamic> arguments = [
+      searchModel.nome,
+      searchModel.sigla,
+      searchModel.marca,
+      searchModel.volume,
+      searchModel.unidade,
+      limit
+    ];
+
+    final results = await _dbService.query('CALL GetClosestProductsByScore(?, ?, ?, ?, ?, ?)', arguments);
+
+    List<EanModel> productList = [];
+    for (var row in results) {
+      EanModel eanModel = EanModel(
+        ean: row['prod_ean'].toString(),
+        nome: row['prod_name'].toString(),
+        imagem: row['prod_image'].toString(),
+        marca: row['prod_brand'].toString(),
+        unidade: row['prod_unit'].toString(),
+        volume: row['prod_vol'].toString(),
+        w1: row['prod_word1'].toString(),
+        w2: row['prod_word2'].toString(),
+        w3: row['prod_word3'].toString(),
+        w4: row['prod_word4'].toString(),
+        sigla: row['sigla'].toString(),
+        preco: "",  // Assume que 'preco' é preenchido em outro lugar
+        hintStatus: int.parse(row['hint_status'].toString()),
+        link: "",  // Assume que 'link' é preenchido em outro lugar
+      );
+      productList.add(eanModel);
+    }
+
+    return productList;
+  }
+}
+
+
+
+
+
+
+
 ////////////////////////////////////////////////////////
 //////// NOVA SEARCH com PROCEDURES --- 24/08/23
 ///////////////////////////////////////////////////////
@@ -443,20 +498,6 @@ Future<List<EanModel>> searchProductV2(SearchModel searchProduct, int inputLimit
     return productList;
 }
 */
-
-
-  Future<void> insertTerm(String term, String search_type) async {
-    var sql = '''
-      INSERT INTO Term(user_id, basket_id, term_string, term_date, search_type)
-      VALUES (${HHVar.c}, ${HHVar.c}, ${HHVar.c}, CONVERT_TZ(UTC_TIMESTAMP(), '+00:00', '-03:00'), ${HHVar.c})
-    ''';
-    //DateTime now = DateTime.now(); // Obter a data e hora atuais
-    List<dynamic> arguments = [HHGlobals.HHUser.userId, HHGlobals.HHBasket.value.basket_id, term, search_type];
-    await _dbService.query(sql, arguments);
-  }
-
-
-}
 
   //v3 
   /*

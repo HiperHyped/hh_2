@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:hh_2/src/config/common/components/hh_icon_button.dart';
 import 'package:hh_2/src/config/common/var/hh_colors.dart';
+import 'package:hh_2/src/config/common/var/hh_enum.dart';
 import 'package:hh_2/src/config/common/var/hh_globals.dart';
 import 'package:hh_2/src/config/common/var/hh_notifiers.dart';
 import 'package:hh_2/src/config/common/var/hh_var.dart';
 import 'package:hh_2/src/config/db/db_hint.dart';
-import 'package:hh_2/src/models/basket_model.dart';
+//import 'package:hh_2/src/models/basket_model.dart';
 import 'package:hh_2/src/models/ean_model.dart';
 import 'package:hh_2/src/models/suggestion_model.dart';
 import 'package:hh_2/src/pages/hint/components/recipe_dialog.dart';
@@ -116,7 +117,7 @@ class _HintCardState extends State<HintCard> {
           : (widget.isShrunk ? HHVar.sugShrink : HHVar.sugWidth),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: HHColors.hhColorDarkFirst,
+          color: HHColors.getColor(Functions.hint),
         ),
         child: Padding(
           padding: const EdgeInsets.all(6.0),

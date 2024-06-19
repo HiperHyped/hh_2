@@ -6,6 +6,8 @@ import 'package:intl/date_symbol_data_local.dart';
 class Utils{
 
 
+
+
   //R$ VALOR
   String priceToCurrency(double price){
 

@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hh_2/src/config/common/var/hh_address.dart';
+import 'package:hh_2/src/config/common/var/hh_colors.dart';
 import 'package:hh_2/src/models/ean_model.dart';
 
 
@@ -18,8 +19,10 @@ class HHUrlImage extends StatelessWidget {
     return CachedNetworkImage(
       imageUrl: imageUrl,
       fit: BoxFit.cover,
-      placeholder: (context, url) => const Center(
-        child: CircularProgressIndicator(),
+      placeholder: (context, url) =>  Center(
+        child: CircularProgressIndicator(
+          color: HHColors.hhColorFirst,
+        ),
       ),
       errorWidget: (context, url, error) => Container()
       

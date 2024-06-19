@@ -1,9 +1,14 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:hh_2/src/config/common/var/hh_enum.dart';
 import 'package:hh_2/src/models/basket_model.dart';
 import 'package:hh_2/src/models/cat_model.dart';
 import 'package:hh_2/src/models/ean_model.dart';
 import 'package:hh_2/src/models/history_model.dart';
 import 'package:hh_2/src/models/periodic_model.dart';
+import 'package:hh_2/src/models/picture_model.dart';
 import 'package:hh_2/src/models/suggestion_model.dart';
 import 'package:hh_2/src/models/user_model.dart';
 
@@ -36,7 +41,30 @@ abstract class HHGlobals{
 
   static ValueNotifier<List<PeriodicModel>> HHPeriodicLists = ValueNotifier([]);
 
+  static ValueNotifier<List<PictureModel>> HHPictureList = ValueNotifier([]);
+
   static SourceOrigin HHProdOrigin = SourceOrigin.G;
+
+  static File pictureFile = File('');
+  
+  static Uint8List pictureFileBytes = Uint8List(0);
+
+  //static ValueNotifier<bool> isAIPhotoProcessing = ValueNotifier<bool>(false); // Notifier para AIPhoto
+
+  static Map<Functions, ValueNotifier<bool>> isProcessing = {
+    Functions.image: ValueNotifier<bool>(false),
+    Functions.periodic: ValueNotifier<bool>(false),
+    Functions.history: ValueNotifier<bool>(false),
+    Functions.hint: ValueNotifier<bool>(false),
+    Functions.book: ValueNotifier<bool>(false),
+  };
+
+
+  /////////////// USER BYPASS
+  ///
+  static bool userBypass = true;
+  static String userLoginByPass = "AA1";
+  static String userPasswordByPass = "aa1";
 
 
 

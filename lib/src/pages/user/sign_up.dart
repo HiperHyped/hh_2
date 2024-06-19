@@ -39,9 +39,9 @@ class _SignUpState extends State<SignUp> {
   final _emailController = TextEditingController();
   final _nameController = TextEditingController();
 
-  final _cpfController = new MaskedTextController(mask: '000.000.000-00');
-  final _rgController = new MaskedTextController(mask: '00.000.000-0');
-  final _phoneController = new MaskedTextController(mask: '(00) 00000-0000');
+  final _cpfController = MaskedTextController(mask: '000.000.000-00');
+  final _rgController = MaskedTextController(mask: '00.000.000-0');
+  final _phoneController = MaskedTextController(mask: '(00) 00000-0000');
 
   //final _cpfController = TextEditingController();
   //final _rgController = TextEditingController();
@@ -79,7 +79,7 @@ class _SignUpState extends State<SignUp> {
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           children: <Widget>[
             HHTextField(
               icon: Icons.login,

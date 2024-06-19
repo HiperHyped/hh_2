@@ -1,3 +1,4 @@
+import 'package:hh_2/src/config/common/var/hh_enum.dart';
 import 'package:hh_2/src/config/common/var/hh_globals.dart';
 import 'package:hh_2/src/config/common/var/hh_notifiers.dart';
 import 'package:hh_2/src/config/db/db_service.dart';
@@ -13,9 +14,11 @@ class DBBook {
   final DBService _dbService = DBService();
 
   void loadUserRecipes() async {
+    HHGlobals.isProcessing[Functions.book]?.value = true;
     List<SuggestionModel> suggestions = await getSuggestionsByUserId(HHGlobals.HHUser.userId);
     HHGlobals.HHUserBook.value = suggestions;
     HHNotifiers.counter[CounterType.BookCount]!.value = suggestions.length;
+    HHGlobals.isProcessing[Functions.book]?.value = false;
   }
   
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
+import 'package:hh_2/src/config/common/var/hh_enum.dart';
 import 'package:hh_2/src/config/common/var/hh_globals.dart';
 //import 'package:hh_2/src/config/common/components/hh_price_tag.dart';
 import 'package:hh_2/src/config/common/image/hh_url_image.dart';

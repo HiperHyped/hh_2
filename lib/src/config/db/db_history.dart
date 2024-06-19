@@ -1,3 +1,4 @@
+import 'package:hh_2/src/config/common/var/hh_enum.dart';
 import 'package:hh_2/src/config/common/var/hh_globals.dart';
 import 'package:hh_2/src/config/common/var/hh_notifiers.dart';
 import 'package:hh_2/src/config/common/var/hh_settings.dart';
@@ -16,9 +17,11 @@ class DBHistory {
   final DBSearch _dbSearch = DBSearch();
 
   void loadHistoryOnce() async {
+    HHGlobals.isProcessing[Functions.history]?.value = true;
     HistoryModel history = await getBasketHistory(HHGlobals.HHUser.userId);
     HHGlobals.HHUserHistory.value = history;
     HHNotifiers.counter[CounterType.HistoryCount]!.value = history.basketHistory.length;
+    HHGlobals.isProcessing[Functions.history]?.value = false;
   }
 
   /*void loadHistoryOnce() async {

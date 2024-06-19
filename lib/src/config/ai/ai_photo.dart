@@ -1,81 +1,63 @@
-import 'package:flutter/material.dart';
+import 'dart:typed_data';
+import 'package:hh_2/src/config/common/var/hh_enum.dart';
 import 'package:hh_2/src/config/db/db_search.dart';
+import 'package:hh_2/src/models/basket_model.dart';
 import 'package:hh_2/src/models/ean_model.dart';
+import 'package:hh_2/src/models/picture_model.dart';
 import 'package:hh_2/src/models/search_model.dart';
-import 'package:hh_2/src/pages/photo/photo_bar.dart';
-import 'dart:io';
 import 'ai_functions.dart';
+import 'package:hh_2/src/config/common/var/hh_globals.dart'; // Importar HHGlobals
 
-class AIPhoto extends StatefulWidget {
-  final File image;
+class AIPhoto {
+  final Uint8List imageBytes;
 
-  AIPhoto({required this.image}) {
+  AIPhoto({required this.imageBytes}) {
     AIFunctions.initLog();
   }
 
-  @override
-  _AIPhotoState createState() => _AIPhotoState();
-}
-
-class _AIPhotoState extends State<AIPhoto> {
-  late Future<List<EanModel>> _response;
   final DBSearch _dbSearch = DBSearch();
 
-  @override
-  void initState() {
-    super.initState();
-    _response = analyzeImage(widget.image);
-  }
-
-  Future<List<EanModel>> analyzeImage(File image) async {
+  Future<void> analyzeImage(Uint8List imageBytes) async {
     try {
-      String fileId = await AIFunctions.uploadImage(image);
+      // Indicar que AIPhoto está em processamento
+      HHGlobals.isProcessing[Functions.image]?.value = true;
+
+      String fileId = await AIFunctions.uploadImageBytes(imageBytes);
       Map<String, String> ids = await AIFunctions.createThreadAndRun(fileId);
+      
+      // Verificar se ids['thread_id'] e ids['run_id'] não são nulos
+      if (ids['thread_id'] == null || ids['run_id'] == null) {
+        throw Exception('Thread ID or Run ID is null');
+      }
+
       await AIFunctions.pollRunStatus(ids['thread_id']!, ids['run_id']!);
       List<SearchModel> searchProductList = await AIFunctions.fetchMessages(ids['thread_id']!, ids['run_id']!);
 
-      // Chamar a função searchProductV2 para cada item da lista de SearchModel
-      List<EanModel> finalResults = [];
+      BasketModel basket = BasketModel();
       for (SearchModel searchModel in searchProductList) {
-        List<EanModel> results = await _dbSearch.searchProductV2(searchModel, 1);
-        finalResults.addAll(results);
+        List<EanModel> results = await _dbSearch.searchProductWithScore(searchModel, 1);
+        for (var result in results) {
+          basket.products.add(result);
+        }
       }
 
-      return finalResults;
+      // Criar e adicionar PictureModel a HHPictureList
+      PictureModel pictureModel = PictureModel(
+        basket: basket,
+        searchProductList: searchProductList,
+        image: imageBytes,
+        imageRedux: HHGlobals.pictureFileBytes, // Utilize a imagem reduzida
+        threadId: ids['thread_id']!,
+        runId: ids['run_id']!,
+      );
+
+      HHGlobals.HHPictureList.value.add(pictureModel);
+      HHGlobals.HHPictureList.notifyListeners(); // Notificar os listeners
     } catch (e) {
       throw Exception("Error in analyzeImage: $e");
+    } finally {
+      // Indicar que AIPhoto terminou o processamento
+      HHGlobals.isProcessing[Functions.image]?.value = false;
     }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Resultado da Análise')),
-      body: Column(
-        children: [
-          Container(
-            height: 300,
-            child: Image.file(widget.image),
-          ),
-          Expanded(
-            child: FutureBuilder<List<EanModel>>(
-              future: _response,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Erro: ${snapshot.error}'));
-                } else if (snapshot.hasData) {
-                  final eanProductList = snapshot.data!;
-                  return PhotoBar(eanProductList: eanProductList);
-                } else {
-                  return Center(child: Text('Nenhuma mensagem encontrada.'));
-                }
-              },
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }

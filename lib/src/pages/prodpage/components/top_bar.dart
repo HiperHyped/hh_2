@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:hh_2/src/config/common/components/hh_button.dart';
 import 'package:hh_2/src/config/common/components/hh_text_search.dart';
-//import 'package:hh_2/src/config/common/components/hh_uf_drop_down.dart';
-//import 'package:hh_2/src/config/common/components/hh_text_field.dart';
 import 'package:hh_2/src/config/common/var/hh_colors.dart';
 import 'package:hh_2/src/models/basket_model.dart';
 import 'package:hh_2/src/models/history_model.dart';
 import 'package:hh_2/src/models/user_model.dart';
 import 'package:hh_2/src/pages/dimension/dimension_page.dart';
-import 'package:hh_2/src/pages/photo/image_dialog.dart';
-import 'package:hh_2/src/pages/photo/photo_dialog.dart';
+import 'package:hh_2/src/pages/image/uni_image_dialog.dart';
+import 'package:hh_2/src/pages/settings/setting_page.dart';
 import 'package:hh_2/src/pages/summary/summary_page.dart';
 import 'package:hh_2/src/pages/user/edit_user.dart';
-//import 'package:hh_2/src/pages/user/sign_up.dart';
 import 'package:hh_2/src/pages/start/start_screen.dart';
 import 'package:hh_2/src/config/common/var/hh_globals.dart';
 import 'package:hh_2/src/services/utils.dart';
+import 'package:image_picker/image_picker.dart';
 
 class TopBar extends StatefulWidget implements PreferredSizeWidget {
   const TopBar({
@@ -35,11 +32,11 @@ class _TopBarState extends State<TopBar> {
   Widget build(BuildContext context) {
 
     UserModel? user = HHGlobals.HHUser;
-    String initials = (user.name.split(' ')
+    /*String initials = (user.name.split(' ')
             .map((l) => l[0])
             .take(2)
             .join())
-      .toUpperCase();
+      .toUpperCase();*/
 
     return AppBar(
           backgroundColor: HHColors.hhColorGreyMedium,
@@ -62,36 +59,29 @@ class _TopBarState extends State<TopBar> {
             IconButton(
               padding: EdgeInsets.all(4.0),
               icon: const Icon(
-                Icons.image_outlined,
+                Icons.image_search_outlined,
                 size: 30,
                 color: Colors.grey,
               ),
               onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) => ImageDialog(),
-                );
+                UniImageDialog.getImage(context, source: ImageSource.gallery);
               },
             ),
 
             // Photo 
             IconButton(
-              padding: EdgeInsets.all(4.0),
+              padding: const EdgeInsets.all(4.0),
               icon: const Icon(
                 size: 30,
                 color: Colors.grey,
                 Icons.camera_alt_outlined
                 ),
               onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) =>  PhotoDialog(),
-                );
+                UniImageDialog.getImage(context, source: ImageSource.camera);
               },
             ),
 
             PopupMenuButton<int>(
-              //padding: EdgeInsets.all(0.0),
               icon: CircleAvatar(
                 backgroundColor: HHColors.hhColorFirst,
                 child: Padding(
@@ -99,140 +89,150 @@ class _TopBarState extends State<TopBar> {
                   child: Text(
                     Utils.getUserInitials(HHGlobals.HHUser.name),
                     style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
+                        fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
                   ),
                 ),
               ),
               offset: Offset(0, 0),
               shape: RoundedRectangleBorder(
-                side:BorderSide(
-                  color: HHColors.hhColorFirst, 
+                side: BorderSide(
+                  color: HHColors.hhColorFirst,
                   style: BorderStyle.solid,
                   width: 4.0,
-                  ),
-                borderRadius: BorderRadius.all(Radius.circular(12)),
                 ),
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+              ),
               itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
                 PopupMenuItem<int>(
                   value: 0,
-                  child: Container(
-                    margin: const EdgeInsets.all(0.0),
-                    padding: const EdgeInsets.all(0.0),
-                    child: Text(
-                      user.name,  // Substitua com a informação do usuário
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black
-                        ),
-                    ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(user.name, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black, fontSize: 16)),
+                          Text(user.email, style: const TextStyle(color: Colors.black, fontSize: 16)),
+                          Text("${user.city} / ${user.uf}", style: const TextStyle(color: Colors.black, fontSize: 16)),
+                        ],
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.edit, color: HHColors.hhColorFirst),
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return EditUser();
+                            },
+                          );
+                        },
+                      ),
+                    ],
                   ),
                 ),
                 PopupMenuItem<int>(
                   value: 1,
-                  child: Column(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Align(
-                        alignment: Alignment.topLeft,
-                        child: Container(
-                          padding: const EdgeInsets.all(0.0),
-                          child: Text(
-                            user.email,  // Substitua com a informação do usuário
-                            style: const TextStyle(color: Colors.black),
-                          ),
+                      Icon(Icons.assignment_outlined, color: HHColors.hhColorFirst),
+                      SizedBox(width: 5),
+                      Expanded(
+                        child: TextButton(
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(builder: (BuildContext context) {
+                                return SummaryPage(); // Navegue para a SummaryPage como uma nova tela
+                              }),
+                            );
+                          },
+                          child: Text("Resumo", style: TextStyle(color: HHColors.hhColorFirst, fontSize: 16)),
                         ),
                       ),
-                      Align(
-                        alignment: Alignment.topLeft,
-                        child: Container(
-                          padding: const EdgeInsets.all(0.0),
-                          child: Text(
-                            "${user.city} /  ${user.uf}",  // Substitua com a informação do usuário
-                            style: const TextStyle(color: Colors.black),
-                          ),
+                    ],
+                  ),
+                ),
+
+                PopupMenuItem<int>(
+                  value: 2,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Icon(Icons.bar_chart_outlined, color: HHColors.hhColorFirst),
+                      SizedBox(width: 5),
+                      Expanded(
+                        child: TextButton(
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(builder: (BuildContext context) {
+                                return DimensionsPage(); // Navegue para a DimensionsPage como uma nova tela
+                              }),
+                            );
+                          },
+                          child: Text("Análise", style: TextStyle(color: HHColors.hhColorFirst, fontSize: 16)),
                         ),
                       ),
                     ],
                   ),
                 ),
                 PopupMenuItem<int>(
-                  value: 2,
-                  child: HHButton(
-                    fontSize:16,
-                    padding: 0,
-                    label: "Editar Dados",
-                    invert: true,
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return EditUser();
-                        },
-                      );
-                    },
-                  ),
-                ),
-                PopupMenuItem<int>(
                   value: 3,
-                  child: HHButton(
-                    fontSize: 16,
-                    padding: 0,
-                    label: "Resumo",
-                    invert: true,
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (BuildContext context) {
-                          return SummaryPage(); // Navegue para a SummaryPage como uma nova tela
-                        }),
-                      );
-                    },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Icon(Icons.settings_outlined, color: HHColors.hhColorFirst),
+                      SizedBox(width: 5),
+                      Expanded(
+                        child: TextButton(
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(builder: (BuildContext context) {
+                                return SettingsPage(); // Navegue para a SettingsPage como uma nova tela
+                              }),
+                            );
+                          },
+                          child: Text("Preferências", style: TextStyle(color: HHColors.hhColorFirst, fontSize: 16)),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 PopupMenuItem<int>(
                   value: 4,
-                  child: HHButton(
-                    fontSize: 16,
-                    padding: 0,
-                    label: "Análise",
-                    invert: true,
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (BuildContext context) {
-                          return DimensionsPage(); // Navegue para a SummaryPage como uma nova tela
-                        }),
-                      );
-                    },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Icon(Icons.logout, color: HHColors.hhColorFirst),
+                      SizedBox(width: 5),
+                      Expanded(
+                        child: TextButton(
+                          onPressed: () {
+                            HHGlobals.HHUser = UserModel(password: "", login: "");
+                            HHGlobals.HHBasket.value = BasketModel();
+                            HHGlobals.HHUserBook.value.clear();
+                            HHGlobals.HHUserHistory.value = HistoryModel();
+                            HHGlobals.HHSuggestionList.value.clear();
+                            HHGlobals.HHGridList.value.clear();
+                            HHGlobals.HHPeriodicLists.value.clear();
+                            Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(builder: (c) {
+                              return StartPage();
+                            }));
+                          },
+                          child: Text("Log Out", style: TextStyle(color: HHColors.hhColorFirst, fontSize: 16)),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                PopupMenuItem<int>(
-                  value: 5,
-                  child: HHButton(
-                    fontSize:16,
-                    padding: 0,
-                    label: "Log Out",
-                    invert: true,
-                    onPressed: () {
-                      HHGlobals.HHUser = UserModel(password: "", login: "");
-                      HHGlobals.HHBasket.value = BasketModel();
-                      HHGlobals.HHUserBook.value.clear();
-                      HHGlobals.HHUserHistory.value = HistoryModel();
-                      HHGlobals.HHSuggestionList.value.clear();
-                      HHGlobals.HHGridList.value.clear();
-                      HHGlobals.HHPeriodicLists.value.clear();
-                      Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (c) {return StartPage();})
-                      );
-                    }
-                  ),
-                ),
-                
                 // Adicione mais PopupMenuItems conforme a necessidade.
               ],
               onSelected: (int value) {
                 // Handle action based on the selected value
               },
-            ), 
+            ),
+
+
            ],
 
         );

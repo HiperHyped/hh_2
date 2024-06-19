@@ -6,7 +6,8 @@ enum CounterType {
   HintCount,
   HistoryCount,
   BookCount,
-  PeriodicCount
+  PeriodicCount,
+  PictureCount
   // Adicione mais se necessário
 }
 
@@ -17,6 +18,7 @@ class HHNotifiers {
     CounterType.HistoryCount: ValueNotifier<int>(0),
     CounterType.BookCount: ValueNotifier<int>(0),
     CounterType.PeriodicCount: ValueNotifier<int>(0), 
+    CounterType.PictureCount: ValueNotifier<int>(0),
     // Adicione mais se necessário
   };
 

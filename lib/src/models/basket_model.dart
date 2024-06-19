@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hh_2/src/config/common/var/hh_enum.dart';
 //import 'package:hh_2/src/config/ai/ai_xerxes.dart';
 import 'package:hh_2/src/config/common/var/hh_notifiers.dart';
 import 'package:hh_2/src/config/db/db_basket.dart';
@@ -7,24 +8,7 @@ import 'package:hh_2/src/models/ean_model.dart';
 import 'package:flutter/foundation.dart';
 
 
-enum SourceOrigin {
-  G, //grid
-  S, //search
-  R, //recipe
-  H, //historic
-  B, //book
-  P, //periodic
-  F, //foto (photo)
-  // add more as necessary
-}
 
-enum HintStatus {
-  I, // initial (potential for recipe)
-  S, // suggested (came as a suggested ingredient)
-  N, // not in list (not a ingredient)
-  U, // used (initial product in recipe)
-  // add more as necessary
-}
 
 class EanInfo {
   SourceOrigin sourceOrigin;

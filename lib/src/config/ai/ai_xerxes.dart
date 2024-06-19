@@ -4,6 +4,7 @@
 import 'package:dart_openai/dart_openai.dart';
 //import 'package:dart_openai/openai.dart';
 import 'package:hh_2/src/config/ai/ai_service.dart';
+import 'package:hh_2/src/config/common/var/hh_enum.dart';
 import 'package:hh_2/src/config/common/var/hh_globals.dart';
 import 'package:hh_2/src/config/log/log_service.dart';
 import 'package:hh_2/src/models/basket_model.dart';

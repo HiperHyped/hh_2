@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hh_2/src/config/common/components/hh_icon_button.dart';
 import 'package:hh_2/src/config/common/var/hh_colors.dart';
+import 'package:hh_2/src/config/common/var/hh_enum.dart';
 import 'package:hh_2/src/config/common/var/hh_globals.dart';
 import 'package:hh_2/src/config/common/var/hh_notifiers.dart';
 import 'package:hh_2/src/config/common/var/hh_var.dart';
@@ -117,7 +118,7 @@ class _BookCardState extends State<BookCard> {
           : (widget.isShrunk ? HHVar.sugShrink : HHVar.sugWidth),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: Colors.blueAccent,
+          color: HHColors.getColor(Functions.book),
         ),
         child: Padding(
           padding: const EdgeInsets.all(6.0),

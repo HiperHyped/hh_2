@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hh_2/src/config/ai/ai_photo.dart';
 import 'package:hh_2/src/config/ai/xerxes_operations.dart';
 import 'package:hh_2/src/config/common/var/hh_colors.dart';
+import 'package:hh_2/src/config/common/var/hh_enum.dart';
 import 'package:hh_2/src/config/common/var/hh_globals.dart';
 import 'package:hh_2/src/config/common/var/hh_notifiers.dart';
 import 'package:hh_2/src/config/common/var/hh_settings.dart';
@@ -14,8 +16,9 @@ import 'package:hh_2/src/pages/hint/hint_bar.dart';
 import 'package:hh_2/src/pages/history/history_bar.dart';
 import 'package:hh_2/src/pages/pay/pay_bar.dart';
 import 'package:hh_2/src/pages/periodic/periodic_bar.dart';
+import 'package:hh_2/src/pages/picture/picture_bar.dart';
 import 'package:hh_2/src/pages/prodpage/prod_page.dart';
-import 'package:hh_2/src/pages/settings/setting_bar.dart'; // Ajuste a rota conforme a localização da SettingBar
+//import 'package:hh_2/src/pages/settings/setting_bar.dart'; // Ajuste a rota conforme a localização da SettingBar
 
 import 'package:badges/badges.dart' as badges;
 
@@ -37,12 +40,12 @@ class _BaseScreenState extends State<BaseScreen> {
 
   
   bool showBasketBar = false;
-  bool showPromoBar = false;
+  bool showImageBar = false;
   bool showHintBar = false;
   bool showCalendarBar = false; //Calendar
   bool showHistoryBar = false;
   bool showBookBar = false;
-  bool showSettingBar = false;
+  //bool showSettingBar = false;
   bool showPayBar = false;
 
   late final DBHistory _dbHistory = DBHistory();
@@ -56,22 +59,28 @@ class _BaseScreenState extends State<BaseScreen> {
     _dbBook.loadUserRecipes();
     _dbPeriodic.loadPeriodicOnce(); // Periodic List
 
-    //HHNotifiers.counter['basketItemCount']!.value = HHGlobals.HHBasket.value.productQuantities.length;
-    //HHGlobals.HHBasket.value.products
-    // IA: 2023-06-08 - Atualizar o contador de itens da cesta sempre que a cesta mudar.
-    /// e APLICAR XERXES!!!!!!
     HHNotifiers.counter[CounterType.BasketCount]!.addListener(() async {
-      if(HHGlobals.HHBasket.value.isNotEmpty ) {
+      if (HHGlobals.HHBasket.value.isNotEmpty) {
         print("NOTIFIERS: ${HHNotifiers.counter[CounterType.BasketCount]}");
         print("HHSETTINGS.HINTSUGGEST: ${HHSettings.hintSuggest}");
-        if(HHSettings.hintSuggest){
+        if (HHSettings.hintSuggest) {
+          HHGlobals.isProcessing[Functions.hint]?.value = true;
           XerxesOperations operations = XerxesOperations();
           await operations.performOperations();
+          HHGlobals.isProcessing[Functions.hint]?.value = false;
         }
       }
     });
-  }
 
+    // Adicionando o listener para PictureCount
+    HHNotifiers.counter[CounterType.PictureCount]!.addListener(() async {
+      if (HHGlobals.pictureFileBytes.isNotEmpty) {
+        AIPhoto aiPhoto = AIPhoto(imageBytes: HHGlobals.pictureFileBytes);
+        await aiPhoto.analyzeImage(HHGlobals.pictureFileBytes); // Chamada assíncrona para processar a imagem
+      }
+    });
+
+  }
 
   @override
   void dispose() {
@@ -95,12 +104,12 @@ class _BaseScreenState extends State<BaseScreen> {
               child: BasketBar(totalPriceNotifier: totalPriceNotifier),
             ),
           ),
-        if (showPromoBar)
+        if (showImageBar)
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
               height: HHVar.barHeight,
-              //child: CalendarBar(),
+              child: PictureBar(), 
             ),
           ),
         if (showHistoryBar)
@@ -135,16 +144,16 @@ class _BaseScreenState extends State<BaseScreen> {
                   child: BookBar(),
               ),
           ),
-        if (showSettingBar)
+        /*if (showSettingBar)
             Align(
                 alignment: Alignment.bottomCenter,
                 child: Container(
                   color: HHColors.hhColorGreyLight,
-                  height: 330, // Ajuste a altura conforme a necessidade
-                  constraints: const BoxConstraints(maxWidth: 600),
+                  height: 350, // Ajuste a altura conforme a necessidade
+                  constraints: const BoxConstraints(maxWidth: 650),
                   child: SettingBar(),
                 ),
-            ),
+            ),*/
         if (showPayBar)
           Align(
               alignment: Alignment.bottomCenter,
@@ -184,10 +193,10 @@ class _BaseScreenState extends State<BaseScreen> {
               switch (index) {
                 case 0:
                   if (HHGlobals.HHBasket.value.isNotEmpty) showBasketBar = !showBasketBar;
-                  break;
+                  break;  
                 case 1:
-                  showPromoBar = !showPromoBar;
-                break;                 
+                  showImageBar = !showImageBar;
+                break;              
                 case 2:
                   if (HHGlobals.HHUserHistory.value.basketHistory.isNotEmpty) showHistoryBar = !showHistoryBar;
                   break;
@@ -200,10 +209,10 @@ class _BaseScreenState extends State<BaseScreen> {
                 case 5:
                    if (HHGlobals.HHUserBook.value.isNotEmpty) showBookBar = !showBookBar;
                   break;
-                case 6:
+                /*case 7:
                   showSettingBar = !showSettingBar;
-                break;
-                case 7:
+                break;*/
+                case 6:
                   showPayBar = !showPayBar;
                   break;
                 default:
@@ -213,11 +222,11 @@ class _BaseScreenState extends State<BaseScreen> {
               // O usuário tocou em um botão diferente.
               // Portanto, ocultamos todas as barras e mostramos a barra correspondente.
               showBasketBar = false;
-              showPromoBar = false;
+              showImageBar = false;
               showHintBar = false;
               showCalendarBar = false;
               showHistoryBar = false;
-              showSettingBar = false;
+              //showSettingBar = false;
               showPayBar = false;
               showBookBar = false;
               currentIndex = index;
@@ -227,7 +236,7 @@ class _BaseScreenState extends State<BaseScreen> {
                   if (HHGlobals.HHBasket.value.isNotEmpty) showBasketBar = true;
                   break;
                 case 1:
-                  showPromoBar = true;
+                  showImageBar = true;
                   break;  
                 case 2:
                   if (HHGlobals.HHUserHistory.value.basketHistory.isNotEmpty) showHistoryBar = true;
@@ -241,10 +250,10 @@ class _BaseScreenState extends State<BaseScreen> {
                 case 5:
                   if (HHGlobals.HHUserBook.value.isNotEmpty) showBookBar = true;
                   break;  
-                case 6:
+                /*case 7:
                   showSettingBar = true;
-                  break;                
-                case 7:
+                  break;          */      
+                case 6:
                   showPayBar = true;
                   break;
                 default:
@@ -282,122 +291,197 @@ class _BaseScreenState extends State<BaseScreen> {
             label: 'Carrinho',
           ),
 
-          // Promoção
-          const BottomNavigationBarItem(
-            icon: Icon(size: 40, Icons.monetization_on_outlined), // ícone de pagamento
-            label: 'Promoção',
-          ),
-     
-          // Historico
+          // Imagem
           BottomNavigationBarItem(
-            icon: ValueListenableBuilder<int>(
-              valueListenable: HHNotifiers.counter[CounterType.HistoryCount]!,
-              builder: (context, count, _) => 
-                badges.Badge(
-                  badgeStyle: const badges.BadgeStyle(
-                    badgeColor: Colors.purple,
-                    shape: badges.BadgeShape.circle,
+            icon: ValueListenableBuilder<bool>(
+              valueListenable: HHGlobals.isProcessing[Functions.image]!, //HHGlobals.isAIPhotoProcessing,
+              builder: (context, isProcessing, _) {
+                return badges.Badge(
+                  badgeStyle: badges.BadgeStyle(
+                    badgeColor: isProcessing ? Colors.transparent : HHColors.getColor(Functions.image),
                     padding: EdgeInsets.all(6.0),
                   ),
-                  badgeContent: Text(
-                    count.toString(),
-                    style: const TextStyle(color: Colors.white),
-                  ),
+                  badgeContent: isProcessing
+                      ? SizedBox(
+                          width: 14,
+                          height: 14,
+                          child: CircularProgressIndicator(
+                            color: HHColors.getColor(Functions.image),
+                            strokeWidth: 4.0,
+                          ),
+                        )
+                      : ValueListenableBuilder<int>(
+                          valueListenable: HHNotifiers.counter[CounterType.PictureCount]!,
+                          builder: (context, count, _) {
+                            return Text(
+                              count.toString(),
+                              style: const TextStyle(color: Colors.white),
+                            );
+                          },
+                        ),
                   position: badges.BadgePosition.topEnd(top: -5, end: -0),
-                  showBadge: count >= 1 ? true : false,
-                  child: const Icon(
-                    size: 40,
-                    //color: Colors.blueGrey,
-                    Icons.calendar_month_outlined
+                  showBadge: isProcessing || HHNotifiers.counter[CounterType.PictureCount]!.value > 0,
+                  child: const Icon(size: 40, Icons.image_outlined),
+                );
+              },
+            ),
+            label: 'Imagem',
+          ),
+
+     
+          // History
+          BottomNavigationBarItem(
+            icon: ValueListenableBuilder<bool>(
+              valueListenable: HHGlobals.isProcessing[Functions.history]!,
+              builder: (context, isProcessing, _) {
+                return badges.Badge(
+                  badgeStyle: badges.BadgeStyle(
+                    badgeColor: isProcessing ? Colors.transparent : HHColors.getColor(Functions.history),
+                    padding: EdgeInsets.all(6.0),
                   ),
-                ),
-              ),
+                  badgeContent: isProcessing
+                    ? SizedBox(
+                        width: 14,
+                        height: 14,
+                        child: CircularProgressIndicator(
+                          color: HHColors.getColor(Functions.history),
+                          strokeWidth: 4.0,
+                        ),
+                      )
+                    : ValueListenableBuilder<int>(
+                        valueListenable: HHNotifiers.counter[CounterType.HistoryCount]!,
+                        builder: (context, count, _) {
+                          return Text(
+                            count.toString(),
+                            style: const TextStyle(color: Colors.white),
+                          );
+                        },
+                      ),
+                  position: badges.BadgePosition.topEnd(top: -5, end: -0),
+                  showBadge: isProcessing || HHNotifiers.counter[CounterType.HistoryCount]!.value > 0,
+                  child: const Icon(size: 40, Icons.calendar_month_outlined),
+                );
+              },
+            ),
             label: 'Histórico',
           ),
 
           // Periodic
           BottomNavigationBarItem(
-            icon: ValueListenableBuilder<int>(
-              valueListenable: HHNotifiers.counter[CounterType.PeriodicCount]!,
-              builder: (context, count, _) => badges.Badge(
-                badgeStyle: const badges.BadgeStyle(
-                  badgeColor: Colors.brown,
-                  shape: badges.BadgeShape.circle,
-                  padding: EdgeInsets.all(6.0),
-                ),
-                badgeContent: Text(
-                  count.toString(),
-                  style: const TextStyle(color: Colors.white),
-                ),
-                position: badges.BadgePosition.topEnd(top: -5, end: -0),
-                showBadge: count >= 1 ? true : false,
-                child: const Icon(
-                  size: 40,
-                  Icons.history,
-                ),
-              ),
+            icon: ValueListenableBuilder<bool>(
+              valueListenable: HHGlobals.isProcessing[Functions.periodic]!,
+              builder: (context, isProcessing, _) {
+                return badges.Badge(
+                  badgeStyle: badges.BadgeStyle(
+                    badgeColor: isProcessing ? Colors.transparent : HHColors.getColor(Functions.periodic),
+                    padding: EdgeInsets.all(6.0),
+                  ),
+                  badgeContent: isProcessing
+                    ? SizedBox(
+                        width: 14,
+                        height: 14,
+                        child: CircularProgressIndicator(
+                          color: HHColors.getColor(Functions.periodic),
+                          strokeWidth: 4.0,
+                        ),
+                      )
+                    : ValueListenableBuilder<int>(
+                        valueListenable: HHNotifiers.counter[CounterType.PeriodicCount]!,
+                        builder: (context, count, _) {
+                          return Text(
+                            count.toString(),
+                            style: const TextStyle(color: Colors.white),
+                          );
+                        },
+                      ),
+                  position: badges.BadgePosition.topEnd(top: -5, end: -0),
+                  showBadge: isProcessing || HHNotifiers.counter[CounterType.PeriodicCount]!.value > 0,
+                  child: const Icon(size: 40, Icons.history),
+                );
+              },
             ),
             label: 'Periódico',
           ),
 
           // Hint!
           BottomNavigationBarItem(
-            icon: ValueListenableBuilder<int>(
-              valueListenable: HHNotifiers.counter[CounterType.HintCount]!,
-              builder: (context, count, _) => 
-                badges.Badge(
-                badgeStyle: badges.BadgeStyle(
-                  badgeColor: HHColors.hhColorDarkFirst,
-                  shape: badges.BadgeShape.circle,
-                  padding: const EdgeInsets.all(6.0),
-                  //borderRadius: BorderRadius.circular(10),
+            icon: ValueListenableBuilder<bool>(
+              valueListenable: HHGlobals.isProcessing[Functions.hint]!,
+              builder: (context, isProcessing, _) {
+                return badges.Badge(
+                  badgeStyle: badges.BadgeStyle(
+                    badgeColor: isProcessing ? Colors.transparent : HHColors.getColor(Functions.hint),
+                    padding: EdgeInsets.all(6.0),
                   ),
-                badgeContent: Text(
-                  count.toString(),
-                  style: const TextStyle(color: Colors.white),
-                  ),
-                position: badges.BadgePosition.topEnd(top: -5, end: -0),
-                showBadge: count >= 1 ? true : false,
-                child: const Icon(
-                  size: 40,
-                  Icons.lightbulb_outline
-                  ),
-                ),
-              ),
+                  badgeContent: isProcessing
+                    ? SizedBox(
+                        width: 14,
+                        height: 14,
+                        child: CircularProgressIndicator(
+                          color: HHColors.getColor(Functions.hint),
+                          strokeWidth: 4.0,
+                        ),
+                      )
+                    : ValueListenableBuilder<int>(
+                        valueListenable: HHNotifiers.counter[CounterType.HintCount]!,
+                        builder: (context, count, _) {
+                          return Text(
+                            count.toString(),
+                            style: const TextStyle(color: Colors.white),
+                          );
+                        },
+                      ),
+                  position: badges.BadgePosition.topEnd(top: -5, end: -0),
+                  showBadge: isProcessing || HHNotifiers.counter[CounterType.HintCount]!.value > 0,
+                  child: const Icon(size: 40, Icons.lightbulb_outline),
+                );
+              },
+            ),
             label: 'Receitas',
           ),
     
           // Livro
           BottomNavigationBarItem(
-            icon: ValueListenableBuilder<int>(
-                valueListenable: HHNotifiers.counter[CounterType.BookCount]!,  // Certifique-se de ter um CounterType para BookCount
-                builder: (context, count, _) => 
-                    badges.Badge(
-                        badgeStyle: const badges.BadgeStyle(
-                            badgeColor: Colors.blueAccent,
-                            shape: badges.BadgeShape.circle,
-                            padding: EdgeInsets.all(6.0),
+            icon: ValueListenableBuilder<bool>(
+              valueListenable: HHGlobals.isProcessing[Functions.book]!,
+              builder: (context, isProcessing, _) {
+                return badges.Badge(
+                  badgeStyle: badges.BadgeStyle(
+                    badgeColor: isProcessing ? Colors.transparent : HHColors.getColor(Functions.book),
+                    padding: EdgeInsets.all(6.0),
+                  ),
+                  badgeContent: isProcessing
+                    ? SizedBox(
+                        width: 14,
+                        height: 14,
+                        child: CircularProgressIndicator(
+                          color: HHColors.getColor(Functions.book),
+                          strokeWidth: 4.0,
                         ),
-                        badgeContent: Text(
+                      )
+                    : ValueListenableBuilder<int>(
+                        valueListenable: HHNotifiers.counter[CounterType.BookCount]!,
+                        builder: (context, count, _) {
+                          return Text(
                             count.toString(),
                             style: const TextStyle(color: Colors.white),
-                        ),
-                        position: badges.BadgePosition.topEnd(top: -5, end: -0),
-                        showBadge: count >= 1 ? true : false,
-                        child: const Icon(
-                            size: 40,
-                            Icons.book_outlined
-                        ),
-                    ),
+                          );
+                        },
+                      ),
+                  position: badges.BadgePosition.topEnd(top: -5, end: -0),
+                  showBadge: isProcessing || HHNotifiers.counter[CounterType.BookCount]!.value > 0,
+                  child: const Icon(size: 40, Icons.book_outlined),
+                );
+              },
             ),
             label: 'Livro',
           ),
 
           // Preferências
-          const BottomNavigationBarItem(
+          /*const BottomNavigationBarItem(
             icon: Icon(size: 40, Icons.settings_outlined), // ícone de pagamento
             label: 'Preferências',
-          ),
+          ),*/
 
           // Pagamento
           const BottomNavigationBarItem(

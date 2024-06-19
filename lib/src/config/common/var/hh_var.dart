@@ -35,7 +35,7 @@ abstract class HHVar{
     // VARIAVEIS PARA SUGGESTION CARD:
     static double sugWidth = 100;
     static double sugShrink = 30;
-    static double barHeight =100;
+    static double barHeight =120;
 
 
     static String c = "?";

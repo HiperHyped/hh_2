@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
+import 'package:hh_2/src/config/ai/ai_xerxes.dart';
 import 'package:hh_2/src/models/search_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:hh_2/src/config/log/log_service.dart';
@@ -24,6 +26,33 @@ class AIFunctions {
       ..headers['OpenAI-Organization'] = organizationId
       ..fields['purpose'] = 'assistants'
       ..files.add(await http.MultipartFile.fromPath('file', image.path));
+
+    var uploadResponse = await uploadRequest.send();
+    if (uploadResponse.statusCode != 200) {
+      var responseBody = await uploadResponse.stream.bytesToString();
+      
+      print("Failed to upload image: $responseBody");
+      throw Exception('Failed to upload image: $responseBody');
+    }
+
+    var uploadResponseBody = await http.Response.fromStream(uploadResponse);
+    var uploadedFile = json.decode(uploadResponseBody.body);
+    print("Image uploaded successfully: $uploadedFile");
+
+    return uploadedFile['id'];
+  }
+
+  static Future<String> uploadImageBytes(Uint8List imageBytes) async {
+    print("Uploading image...");
+
+    var uploadRequest = http.MultipartRequest(
+      'POST',
+      Uri.parse('https://api.openai.com/v1/files'),
+    )
+      ..headers['Authorization'] = 'Bearer $apiKey'
+      ..headers['OpenAI-Organization'] = organizationId
+      ..fields['purpose'] = 'assistants'
+      ..files.add(http.MultipartFile.fromBytes('file', imageBytes, filename: 'image.jpg'));
 
     var uploadResponse = await uploadRequest.send();
     if (uploadResponse.statusCode != 200) {
@@ -164,10 +193,11 @@ class AIFunctions {
 
   static Future<void> pollRunStatus(String threadId, String runId) async {
     String runStatus;
-    int count = 0 ;
+    int count = 0;
+    int maxAttempts = 20; // Defina um número máximo de tentativas para evitar loops infinitos
+
     do {
-      
-      await Future.delayed(const Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 3));
 
       var runStatusResponse = await http.get(
         Uri.parse('https://api.openai.com/v1/threads/$threadId/runs/$runId'),
@@ -184,13 +214,16 @@ class AIFunctions {
       }
 
       var runData = json.decode(runStatusResponse.body);
-      print("COUNT: $count");
+      print("COUNT: $count: ${runData['status']}");
       count++;
       runStatus = runData['status'];
+
+      if (count >= maxAttempts) {
+        throw Exception('Run status polling exceeded maximum attempts');
+      }
     } while (runStatus != 'completed' && runStatus != 'failed');
 
     print("FIM DA RUN: $runStatus");
-    
 
     if (runStatus != 'completed') {
       throw Exception('Run did not complete successfully: $runStatus');
@@ -238,7 +271,7 @@ static Future<List<SearchModel>> fetchMessages(String threadId, String runId) as
     }
 
     var messagesData = json.decode(utf8.decode(messagesResponse.bodyBytes));
-    print("Assistant response: ${messagesData}");
+    //print("Assistant response: ${messagesData}");
 
     // Processar as mensagens para criar uma lista de SearchModel
     List<SearchModel> searchProductList = [];
@@ -248,23 +281,75 @@ static Future<List<SearchModel>> fetchMessages(String threadId, String runId) as
           if (content['type'] == 'text') {
             var textValue = content['text']['value'];
             var productData = json.decode(textValue);
-
+            print("PRODUCT DATA: \n ${productData['Produtos']}");
             for (var product in productData['Produtos']) {
+              print("PRODUCT: $product");
               searchProductList.add(SearchModel(
                 searchType: 'product',
-                nome: product['Produto'],
-                marca: product['Marca'],
-                volume: product['Quantidade'],
-                unidade: product['Unidade'],
+                nome: product['Produto'] ?? '', // Verificação de nulo
+                marca: product['Marca'] ?? '', // Verificação de nulo
+                volume: product['Quantidade'] ?? '', // Verificação de nulo
+                unidade: product['Unidade'] ?? '', // Verificação de nulo
               ));
             }
           }
         }
       }
     }
-
+    print("FIM DO FETCH!!");
     return searchProductList;
   }
 
-  
+
+static Future<List<SearchModel>> fetchMessagesV2(String threadId, String runId) async {
+  var messagesResponse = await http.get(
+    Uri.parse('https://api.openai.com/v1/threads/$threadId/messages'),
+    headers: {
+      'Authorization': 'Bearer $apiKey',
+      'OpenAI-Organization': organizationId,
+      'OpenAI-Beta': 'assistants=v2'
+    },
+  );
+
+  if (messagesResponse.statusCode != 200) {
+    print("Failed to retrieve messages: ${messagesResponse.body}");
+    throw Exception('Failed to retrieve messages: ${messagesResponse.body}');
+  }
+
+  var messagesData = json.decode(utf8.decode(messagesResponse.bodyBytes));
+
+  // Processar as mensagens para criar uma lista de SearchModel
+  List<SearchModel> searchProductList = [];
+  Xerxes xerxes = Xerxes(); // Instância de Xerxes para chamar ax3
+
+  for (var message in messagesData['data']) {
+    if (message['role'] == 'assistant' && message['content'] is List) {
+      for (var content in message['content']) {
+        if (content['type'] == 'text') {
+          var textValue = content['text']['value'];
+          var productData = json.decode(textValue);
+
+          for (var product in productData['Produtos']) {
+            print("PRODUCT: $product");
+            String sigla = await xerxes.ax3(product['Produto'] ?? '');
+            searchProductList.add(SearchModel(
+              searchType: 'prod_cat',
+              nome: product['Produto'] ?? '',
+              sigla: sigla,
+              marca: product['Marca'] ?? '',
+              volume: product['Quantidade'] ?? '',
+              unidade: product['Unidade'] ?? '',
+            ));
+          }
+        }
+      }
+    }
+  }
+
+  print("FIM DO FETCH!!");
+  return searchProductList;
+}
+
+
+
 }

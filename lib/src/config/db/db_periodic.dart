@@ -1,3 +1,4 @@
+import 'package:hh_2/src/config/common/var/hh_enum.dart';
 import 'package:hh_2/src/config/common/var/hh_globals.dart';
 import 'package:hh_2/src/config/common/var/hh_notifiers.dart';
 import 'package:hh_2/src/config/common/var/hh_settings.dart';
@@ -18,6 +19,7 @@ class DBPeriodic {
 
   
   void loadPeriodicOnce() async {
+    HHGlobals.isProcessing[Functions.periodic]?.value = true;
     try {
       List<PeriodicModel> periodicHistory = await getPeriodicHistory(HHGlobals.HHUser.userId);
       /*for (var periodic in periodicHistory) {
@@ -29,6 +31,7 @@ class DBPeriodic {
     } catch (e) {
       print('Erro ao carregar as listas periódicas: $e');
     }
+    HHGlobals.isProcessing[Functions.periodic]?.value = false;
   }
 
   // Função para obter o histórico de listas periódicas do usuário

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hh_2/src/config/common/components/hh_icon_button.dart';
 import 'package:hh_2/src/config/common/var/hh_colors.dart';
+import 'package:hh_2/src/config/common/var/hh_enum.dart';
 import 'package:hh_2/src/config/common/var/hh_globals.dart';
 import 'package:hh_2/src/config/common/var/hh_notifiers.dart';
 import 'package:hh_2/src/config/common/var/hh_var.dart';
@@ -73,7 +74,7 @@ class _HistoryCardState extends State<HistoryCard> {
           : (widget.isShrunk ? HHVar.sugShrink : HHVar.sugWidth),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: Colors.purple,
+          color: HHColors.getColor(Functions.history),
         ),
         child: Padding(
           padding: EdgeInsets.all(8.0),

@@ -36,7 +36,7 @@ class SuggestionModel {
       
 
       futureList.add(() async {
-        String sigla = await x.ax3(product);
+        String sigla = await x.ax3(product); //categorizador de produto de Xerxes
         //print('Produto: $product');
         //print('Sigla obtida: $sigla');
         

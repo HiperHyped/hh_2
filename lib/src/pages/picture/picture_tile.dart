@@ -5,12 +5,12 @@ import 'package:hh_2/src/config/common/var/hh_enum.dart';
 import 'package:hh_2/src/models/ean_model.dart';
 import 'package:hh_2/src/pages/grid/components/prod_card.dart';
 
-class PeriodicTile extends StatelessWidget {
+class PictureTile extends StatelessWidget {
   final EanModel product;
   final int count;
-  final SourceOrigin sourceOrigin = SourceOrigin.P;
+  final SourceOrigin sourceOrigin = SourceOrigin.I;
 
-  PeriodicTile({required this.product, required this.count});
+  PictureTile({required this.product, required this.count});
 
   @override
   Widget build(BuildContext context) {

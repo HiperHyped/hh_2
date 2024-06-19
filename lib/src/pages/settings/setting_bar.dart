@@ -64,7 +64,7 @@ class _SettingBarState extends State<SettingBar> {
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Aceita Sugestão de Receitas?'),
+                Text('Sugestão de Receitas?'),
                 Text("Não", style: 
                   TextStyle(
                     color: HHColors.hhColorBack,
@@ -99,7 +99,7 @@ class _SettingBarState extends State<SettingBar> {
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Classificação Personalizada?'),
+                Text('Ordem Personalizada?'),
                 Text("Não", style: 
                   TextStyle(
                     color: HHColors.hhColorBack,
@@ -134,7 +134,7 @@ class _SettingBarState extends State<SettingBar> {
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Visualização de Produtos'),
+                const Text('Visualização Produtos'),
                 Icon(Icons.vertical_distribute, 
                   color: gridView ? HHColors.hhColorDarkFirst.withOpacity(0.5) : HHColors.hhColorDarkFirst,), ///HORIZONTAL!
                 Switch(
@@ -173,7 +173,7 @@ class _SettingBarState extends State<SettingBar> {
                   activeColor: HHColors.hhColorDarkFirst,
                   value: gridLimit.toDouble(),
                   min: 20,
-                  max: 400,
+                  max: 430,
                   divisions: 20,
                   onChanged: (double newValue) {
                     setState(() {
@@ -230,7 +230,7 @@ class _SettingBarState extends State<SettingBar> {
                 ),
               ),
               Text(historyLimit.toString(), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              SizedBox(width: 15.0), // Espaço entre o texto e o slider
+              //SizedBox(width: 15.0), // Espaço entre o texto e o slider
               Container(
                 width: 150, // Definindo um tamanho fixo para o slider
                 child: Slider(

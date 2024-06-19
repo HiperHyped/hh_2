@@ -37,21 +37,10 @@ class _PhotoTileState extends State<PhotoTile> {
       onTap: () {
         // Implementar a lógica para exibir detalhes do produto se necessário
       },
-      child: Stack(
-        children: [
-          badges.Badge(
-            badgeContent: Text(
-              widget.product.nome,
-              style: const TextStyle(color: Colors.white),
-            ),
-            position: badges.BadgePosition.topEnd(top: -2, end: -0),
-            child: HHUrlImage(
+      child: HHUrlImage(
               product: widget.product,
               onImageDimensions: _updateImageDimensions,
             ),
-          ),
-        ],
-      ),
     );
   }
 }

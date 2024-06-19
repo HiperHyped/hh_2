@@ -1,4 +1,5 @@
 //import 'package:hh_2/src/config/common/var/hh_globals.dart';
+import 'package:hh_2/src/config/common/var/hh_enum.dart';
 import 'package:hh_2/src/config/common/var/hh_var.dart';
 import 'package:hh_2/src/config/db/db_service.dart';
 import 'package:hh_2/src/config/log/log_service.dart';
